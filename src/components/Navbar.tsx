@@ -11,6 +11,7 @@ import {
   User as UserIcon,
   Globe,
   Sparkles,
+  GitBranch,
 } from 'lucide-react';
 import { AppUser, LanguageCode } from '../types';
 import { LANGUAGES, t } from '../data/translations';
@@ -24,6 +25,7 @@ interface NavbarProps {
   onOpenProfile: () => void;
   onLockApp: () => void;
   onSignOut: () => void;
+  onOpenPublish: () => void;
   lowStockCount: number;
 }
 
@@ -35,6 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   onOpenProfile,
   onLockApp,
+  onOpenPublish,
   lowStockCount,
 }) => {
   const navItems = [
@@ -124,6 +127,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </select>
               </div>
             </div>
+
+            {/* Publish Button */}
+            <button
+              onClick={onOpenPublish}
+              title="Publish to GitHub / GitLab"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#161C23] border border-[#26313B] hover:border-[#17D5B3]/50 text-[#17D5B3] text-xs font-bold transition-colors"
+            >
+              <GitBranch className="w-4 h-4" />
+              <span className="hidden sm:inline">Publish</span>
+            </button>
 
             {/* Quick Lock Button */}
             {currentUser?.appLockEnabled && (

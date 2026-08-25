@@ -17,6 +17,7 @@ import { CustomerEntryModal } from './components/modals/CustomerEntryModal';
 import { InvoiceModal } from './components/modals/InvoiceModal';
 import { PaymentQrModal } from './components/modals/PaymentQrModal';
 import { RestoreModal } from './components/modals/RestoreModal';
+import { PublishModal } from './components/modals/PublishModal';
 
 // Types & Data
 import {
@@ -81,6 +82,7 @@ export const App: React.FC = () => {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [qrCustomer, setQrCustomer] = useState<Customer | null>(null);
   const [isRestoreOpen, setIsRestoreOpen] = useState(false);
+  const [isPublishOpen, setIsPublishOpen] = useState(false);
 
   // Sync Language
   const handleLanguageChange = (newLang: LanguageCode) => {
@@ -374,6 +376,7 @@ export const App: React.FC = () => {
         onOpenProfile={() => setIsProfileOpen(true)}
         onLockApp={() => setIsLocked(true)}
         onSignOut={handleSignOut}
+        onOpenPublish={() => setIsPublishOpen(true)}
         lowStockCount={lowStockProducts.length}
       />
 
@@ -574,6 +577,12 @@ export const App: React.FC = () => {
         onClose={() => setIsRestoreOpen(false)}
         lang={lang}
         onRestoreSuccess={handleRestoreSuccess}
+      />
+
+      <PublishModal
+        isOpen={isPublishOpen}
+        onClose={() => setIsPublishOpen(false)}
+        lang={lang}
       />
     </div>
   );
