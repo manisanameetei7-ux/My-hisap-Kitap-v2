@@ -31,7 +31,6 @@ export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
   const [senderEmail, setSenderEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [activeTutorialLang, setActiveTutorialLang] = useState<LanguageCode>(lang);
   const [selectedTutorial, setSelectedTutorial] = useState<number | null>(null);
 
   const faqs = [
@@ -215,22 +214,6 @@ export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-1.5 self-start sm:self-auto">
-            {LANGUAGES.map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setActiveTutorialLang(l.code)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                  activeTutorialLang === l.code
-                    ? 'bg-[#FF6F91] text-[#050608]'
-                    : 'bg-[#161C23] text-[#A8B5C2] hover:text-[#F4F8FB]'
-                }`}
-              >
-                {l.nativeLabel}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -277,7 +260,7 @@ export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
         {selectedTutorial !== null && (
           <TutorialVideoPlayer
             initialTutorialIndex={selectedTutorial}
-            lang={activeTutorialLang}
+            lang={'en'}
             onClose={() => setSelectedTutorial(null)}
           />
         )}

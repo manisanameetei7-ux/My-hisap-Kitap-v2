@@ -67,32 +67,16 @@ async function startServer() {
       const selectedVoice = validVoices.includes(voice) ? voice : "Kore";
       const isFemale = ["Kore", "Zephyr", "Aoede"].includes(selectedVoice);
 
-      // Formulate expressive natural human speech prompt based on language and persona gender
+      // Formulate clear, natural speech prompt for multilingual TTS
       let speechPrompt = text;
       if (lang === "as") {
-        if (isFemale) {
-          speechPrompt = `You are a native Assamese female educator and store guide speaking in a warm, pleasant, ultra-realistic Assamese female voice (অসমীয়া মহিলা কণ্ঠ) with pristine Assamese pronunciation and natural inflection. Deliver this step-by-step tutorial clearly and engagingly in authentic Assamese: ${text}`;
-        } else {
-          speechPrompt = `You are a native Assamese male store guide speaking in an authentic, clear, friendly Assamese male voice (অসমীয়া পুৰুষ কণ্ঠ) with smooth natural human cadence: ${text}`;
-        }
+        speechPrompt = `Please read this Assamese text aloud in a warm, natural, friendly female voice with clear native Assamese pronunciation: ${text}`;
       } else if (lang === "bn") {
-        if (isFemale) {
-          speechPrompt = `Speak in an authentic, fluent, warm Bengali female conversational tone (বাংলা মহিলা কণ্ঠ) with natural rhythm and clarity: ${text}`;
-        } else {
-          speechPrompt = `Speak in an authentic, fluent, clear Bengali male conversational tone with natural rhythm: ${text}`;
-        }
+        speechPrompt = `Please read this Bengali text aloud in a warm, natural, friendly female voice with clear native Bengali pronunciation: ${text}`;
       } else if (lang === "hi") {
-        if (isFemale) {
-          speechPrompt = `Speak naturally in a warm, polite Hindi female conversational tone (हिंदी महिला आवाज़) like a friendly store companion: ${text}`;
-        } else {
-          speechPrompt = `Speak naturally in a polite, confident Hindi male conversational tone: ${text}`;
-        }
+        speechPrompt = `Please read this Hindi text aloud in a warm, natural, friendly female voice with clear native Hindi pronunciation: ${text}`;
       } else {
-        if (isFemale) {
-          speechPrompt = `Speak naturally in a warm, expressive, clear human female voice: ${text}`;
-        } else {
-          speechPrompt = `Speak naturally in a confident, helpful human male voice: ${text}`;
-        }
+        speechPrompt = `Please read this text aloud in a warm, natural female voice: ${text}`;
       }
 
       const response = await ai.models.generateContent({

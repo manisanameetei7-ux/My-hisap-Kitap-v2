@@ -21,6 +21,7 @@ import {
   UserCheck,
   Radio,
   Loader2,
+  ShieldCheck,
 } from 'lucide-react';
 import { LanguageCode } from '../types';
 import { LANGUAGES } from '../data/translations';
@@ -35,13 +36,13 @@ export interface TutorialScene {
   description: string;
   narration: {
     en: string;
-    hi: string;
-    bn: string;
-    as: string;
+    hi?: string;
+    bn?: string;
+    as?: string;
   };
-  indicPhonetic: {
-    bn: string;
-    as: string;
+  indicPhonetic?: {
+    bn?: string;
+    as?: string;
   };
   icon: any;
   screenType: 'pos' | 'products' | 'customer' | 'backup';
@@ -71,13 +72,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Navigate to Quick Entry / POS tab and search or scan product barcode.',
         narration: {
           en: 'Welcome to Hisab Kitap Point of Sale billing. Open the Quick Entry tab and select items from your catalog or scan barcodes.',
-          hi: 'हिसाब किताब पॉइंट ऑफ सेल बिलिंग में आपका स्वागत है। क्विक एंट्री टैब खोलें और अपनी दुकान के उत्पाद चुनें या बारकोड स्कैन करें।',
-          bn: 'হিসাব কিতাব পয়েন্ট অব সেল বিলিংয়ে স্বাগতম। কুইক এন্ট্রি ট্যাব খুলুন এবং পণ্য নির্বাচন করুন বা বারকোড স্ক্যান করুন।',
-          as: 'হিচাপ কিতাপ পইণ্ট অব চেল বিলিঙলৈ স্বাগতম। কুইক এণ্ট্ৰী টেব খোলক আৰু দোকানৰ সামগ্ৰী নিৰ্বাচন কৰক বা বাৰক’ড স্কেন কৰক।',
-        },
-        indicPhonetic: {
-          bn: 'हिसाब किताब पॉइंट ऑफ़ सेल बिलिंग में शागोतोम। क्विक एंट्री टैब खुलुन एबोंग पोन्यो निर्बाचन कोरुन बा बारकोड स्कैन कोरुन।',
-          as: 'हिसाप किताब पॉइंट ऑफ़ सेल बिलिंगोले स्वागोतोम। क्विक एंट्री टेबल खोलोक आरु दोकानोर सामग्री बासोनी कोरॉक बा बारकोड स्कैन कोरॉक।',
         },
         icon: ShoppingCart,
         screenType: 'pos',
@@ -97,13 +91,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Link a customer to log Udhar balance, or proceed as Cash / UPI Walk-in.',
         narration: {
           en: 'Choose an existing customer for credit sales, or select Cash or UPI for instant settlement.',
-          hi: 'उधार बिक्री के लिए ग्राहक चुनें, या तुरंत भुगतान के लिए कैश या यूपीआई चुनें।',
-          bn: 'বাকির জন্য গ্রাহক নির্বাচন করুন অথবা দ্রুত নিষ্পত্তির জন্য ক্যাশ বা ইউপিআই বেছে নিন।',
-          as: 'বাকী বিক্ৰীৰ বাবে গ্ৰাহক বাছক নাইবা নগদ বা ইউপিআই বাছক।',
-        },
-        indicPhonetic: {
-          bn: 'बाकिर जोन्नो ग्राहक निर्वाचन कोरुन ओथोबा द्रुतो निशपोत्तिर जोन्नो कैश बा यूपीआई बेछे निन।',
-          as: 'बाकी बिक्रिर बाबे ग्राहक बासक नाइबा नोगद बा यूपीआई बासोनी कोरॉक।',
         },
         icon: Users,
         screenType: 'pos',
@@ -120,13 +107,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Click Complete Sale to auto-deduct stock and generate clean 80mm thermal receipt or WhatsApp bill.',
         narration: {
           en: 'Click Complete Sale to generate an instant printable GST tax invoice and dispatch a WhatsApp receipt to the customer.',
-          hi: 'सेल पूरी करें पर क्लिक करें और तुरंत प्रिंट करने योग्य जीएसटी इनवॉइस और व्हाट्सएप बिल प्राप्त करें।',
-          bn: 'বিক্রি সম্পন্ন করুন বোতাম টিপে সঙ্গে সঙ্গে জিএসটি ইনভয়েস প্রিন্ট করুন এবং হোয়াটসঅ্যাপে রসিদ পাঠান।',
-          as: 'বিক্ৰী সম্পূৰ্ণ কৰক আৰু লগে লগে প্ৰিণ্ট কৰিব পৰা জিএছটি ইনভইচ লাভ কৰক আৰু হোৱাটছএপত ৰচিদ পঠিয়াওক।',
-        },
-        indicPhonetic: {
-          bn: 'बिक्री शम्पोन्नो कोरुन आरु जीएसटी इनवॉइस प्रिंट कोरुन एबोंग व्हाट्सएप ए रोशीद पाथान।',
-          as: 'बिक्री सम्पुर्ण कोरॉक आरु लोटे लोटे प्रिंट कोरिवो पोरा जीएसटी इनवॉइस लाभ कोरॉक आरु व्हाट्सएपोत रोशीद पोथियावक।',
         },
         icon: Receipt,
         screenType: 'pos',
@@ -151,13 +131,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Click "+ Add Product" and specify product category, unit, buy price, and sell price.',
         narration: {
           en: 'Manage your entire shop inventory with eight organized categories including Grocery, Stationery, Beverages, and Household items.',
-          hi: 'किराना, स्टेशनरी, पेय पदार्थ और घरेलू सामान सहित आठ श्रेणियों के साथ अपनी दुकान की इन्वेंट्री प्रबंधित करें।',
-          bn: 'মুদিখানা, স্টেশনারি ও গৃহস্থালি সহ আটটি ক্যাটাগরির সাথে আপনার দোকান পরিচালনা করুন।',
-          as: 'মুদিখানা, ষ্টেচনেৰী আদি আঠটা বিভাগৰ সৈতে দোকানৰ সামগ্ৰী পৰিচালনা কৰক।',
-        },
-        indicPhonetic: {
-          bn: 'मुदीखाना, स्टेशनरी ओ गृहस्थली शोहो आठ-टी कैटेगरीर शाथे आपनार दोकान पोरिचालोना कोरुन।',
-          as: 'मुदीखाना, स्टेशनरी, पानीयो आरु घोरुवा सामग्री सोहो आठ-टा बिभागोर होइते आपुनार दोकान पोरिचालोना कोरॉक।',
         },
         icon: Package,
         screenType: 'products',
@@ -174,13 +147,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Set custom low-stock trigger levels so you never run out of fast-selling essentials.',
         narration: {
           en: 'Set low stock warning triggers so you receive instant alerts on your dashboard when stock is running out.',
-          hi: 'कम स्टॉक अलर्ट सेट करें ताकि सामान खत्म होने से पहले आपको डैशबोर्ड पर तुरंत सूचना मिल सके।',
-          bn: 'স্টক কমে গেলে ড্যাশবোর্ডে সতর্কতা পেতে লো স্টক লিমিট সেট করুন।',
-          as: 'ষ্টক শেষ হোৱাৰ পূৰ্বে ডেশ্বব’ৰ্ডত জাননী পাবলৈ সতৰ্কবাৰ্তা ছেট কৰক।',
-        },
-        indicPhonetic: {
-          bn: 'स्टॉक कोमे गेले डैशबोर्ड-ए शतोर्कोता पेते लो स्टॉक लिमिट सेट कोरुन।',
-          as: 'स्टॉक शेष होवार पूर्वे डैशबोर्डोत जानोनी पाबोलई सोतर्कोबार्ता सेट कोरॉक।',
         },
         icon: Sparkles,
         screenType: 'products',
@@ -205,13 +171,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Search customer name or mobile number to view lifetime credit and pending dues.',
         narration: {
           en: 'Track every customer credit account accurately. View outstanding credit balances and transaction histories.',
-          hi: 'हर ग्राहक का उधार खाता सटीकता से ट्रैक करें। बकाया राशि और पुराना लेन-देन इतिहास देखें।',
-          bn: 'প্রতিটি গ্রাহকের বাকি খাতা এবং পূর্বের লেনদেন ট্র্যাক করুন।',
-          as: 'প্ৰতিজন গ্ৰাহকৰ বাকী খাতা আৰু পূৰ্বৰ লেনদেন সহজে চাওক।',
-        },
-        indicPhonetic: {
-          bn: 'प्रोतीती ग्राहकेर बाकी खाता निर्भुलभावे हिसाब राखुन। बोकेया टाका एबोंग आगेर लेन-देन देखुन।',
-          as: 'प्रोतीजोन ग्राहकोर बाकी खाता सोठीकभावे हिसाब राखोक। बाकी थोका टोका आरु पूर्बोर लेन-देन चावक।',
         },
         icon: Users,
         screenType: 'customer',
@@ -228,13 +187,6 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
         description: 'Display an instant pre-filled UPI QR code or send a polite WhatsApp payment reminder.',
         narration: {
           en: 'Generate dynamic UPI QR codes with payment amount pre-filled, and send automated WhatsApp reminders with payment links.',
-          hi: 'अमाउंट के साथ डायनामिक यूपीआई क्यूआर कोड बनाएं और व्हाट्सएप पर पेमेंट लिंक भेजें।',
-          bn: 'টাকার পরিমাণ সহ সরাসরি ইউপিআই কিউআর কোড তৈরি করুন এবং হোয়াটসঅ্যাপে পেমেন্ট লিংক পাঠান।',
-          as: 'টকাৰ পৰিমাণ সহ ইউপিআই কিউআৰ ক’ড বনাওক আৰু হোৱাটছএপত পেমেন্ট লিংক পঠিয়াওক।',
-        },
-        indicPhonetic: {
-          bn: 'टाकार पोरिमान शोहो शोराशोरी यूपीआई क्यूआर कोड तोइरी कोरुन एबोंग व्हाट्सएप ए पेमेंट लिंक पाथान।',
-          as: 'टोकार पोरिमान सोहो यूपीआई क्यूआर कोड बनावक आरु व्हाट्सएपोत पेमेंट लिंक पोथियावक।',
         },
         icon: QrCode,
         screenType: 'customer',
@@ -249,47 +201,33 @@ export const TUTORIAL_DATA: TutorialGuide[] = [
   },
   {
     id: 'backup-sync',
-    title: 'Backup, Restore & Multi-Language Switching',
+    title: 'Backup, Restore & Data Security',
     category: 'Data & Security',
     durationSec: 35,
-    description: 'Switch between English, Assamese, Bengali, and Hindi instantly. Download full offline backups.',
+    description: 'Download full offline backups, restore store ledgers, and secure shop data.',
     scenes: [
       {
-        title: 'Step 1: Change Shop Language in 1-Click',
-        description: 'Toggle between English, অসমীয়া, বাংলা, and हिन्दी without refreshing.',
+        title: 'Step 1: Secure Data & Backup Management',
+        description: 'Keep your store ledger safe by downloading offline JSON backups anytime.',
         narration: {
-          en: 'Hisab Kitap offers regional language support in English, Assamese, Bengali, and Hindi.',
-          hi: 'हिसाब किताब में अंग्रेजी, असमिया, बांग्ला और हिंदी का पूर्ण समर्थन उपलब्ध है।',
-          bn: 'হিসাব কিতাব সম্পূর্ণ বাংলায়, অসমিয়ায়, হিন্দিতে এবং ইংরেজিতে ব্যবহার করুন।',
-          as: 'হিচাপ কিতাপ সম্পূৰ্ণ অসমীয়া, বঙালী, হিন্দী আৰু ইংৰাজীত ব্যৱহাৰ কৰক।',
+          en: 'Hisab Kitap ensures 100 percent data privacy with local storage and instant JSON backups.',
         },
-        indicPhonetic: {
-          bn: 'हिसाब किताब शम्पोर्नो बांलाय, असमियाय, हिंदिते एबोंग इंग्रेजिते ब्याबहार कोरुन।',
-          as: 'हिसाप किताब सम्पुर्ण अखोमिया, बंगाली, हिन्दी आरु इंग्राजीत ब्याबहार कोरॉक।',
-        },
-        icon: Languages,
+        icon: ShieldCheck,
         screenType: 'backup',
-        highlights: ['Instant UI language switch', 'Multilingual receipts & reports', 'Zero restart required'],
+        highlights: ['Instant JSON backups', 'Secure local storage', 'Zero data loss risk'],
         simulatedData: {
-          selected: 'অসমীয়া / বাংলা / हिन्दी / English',
+          selected: 'Secure Local Storage',
         },
       },
       {
         title: 'Step 2: Export JSON Backup & Restore Ledger',
-        description: 'Keep your store ledger safe by downloading offline JSON backups anytime.',
+        description: 'Export complete backups of your shop data anytime and restore them securely on any new device.',
         narration: {
           en: 'Export complete backups of your shop data anytime and restore them securely on any new device.',
-          hi: 'अपनी दुकान के डेटा का सुरक्षित बैकअप लें और किसी भी नए डिवाइस पर आसानी से रीस्टोर करें।',
-          bn: 'যেকোনো সময় পুরো ডাটার ব্যাকআপ নিন এবং নতুন ডিভাইসে রিস্টোর করুন।',
-          as: 'যিকোনো সময়ত সম্পূৰ্ণ তথ্য বেকআপ লওক আৰু নতুন ডিভাইচত সংস্থাপন কৰক।',
-        },
-        indicPhonetic: {
-          bn: 'जेकोनो शोमोय दोकाने सम्पुर्ण डेटा बैकअप निन एबोंग नोतून डिवाइसे रिस्टोर कोरुन।',
-          as: 'जिकोनो शोमोयोत दोकानोर शोकोलो तथ्य बैकअप लवॉक आरु नोतून डिवाइचोत रिस्टोर कोरॉक।',
         },
         icon: Database,
         screenType: 'backup',
-        highlights: ['Encrypted JSON local storage backup', 'CSV spreadsheets for accountant', 'Secure 4-digit PIN lock'],
+        highlights: ['Encrypted JSON local storage backup', 'CSV spreadsheets for accountant', 'Secure PIN lock'],
         simulatedData: {
           backupFile: 'hisapkitap_backup_2026.json',
           size: '42.8 KB',
@@ -319,10 +257,13 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [videoLang, setVideoLang] = useState<LanguageCode>(lang);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<string>('Kore');
+  const [selectedPersona, setSelectedPersona] = useState<string>(
+    lang === 'as' ? 'pratibha-as-female' : 'Kore'
+  );
   const [isAudioLoading, setIsAudioLoading] = useState<boolean>(false);
   const [isRealHumanVoiceActive, setIsRealHumanVoiceActive] = useState<boolean>(true);
   const [activeVoiceTitle, setActiveVoiceTitle] = useState<string>('✨ Ultra-Realistic Human Voice');
+  const [audioBlocked, setAudioBlocked] = useState<boolean>(false);
 
   const activeTutorial = TUTORIAL_DATA[selectedTutorialIdx] || TUTORIAL_DATA[0];
   const activeScene = activeTutorial.scenes[currentSceneIdx] || activeTutorial.scenes[0];
@@ -356,58 +297,55 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
     window.speechSynthesis.cancel();
 
     const voices = window.speechSynthesis.getVoices();
-    const bnVoice = voices.find(
-      (v) =>
-        v.lang.toLowerCase().startsWith('bn') ||
-        v.name.toLowerCase().includes('bengali')
-    );
-    const hiVoice = voices.find(
-      (v) =>
-        v.lang.toLowerCase().startsWith('hi') ||
-        v.name.toLowerCase().includes('hindi')
-    );
-    const enVoice =
-      voices.find((v) => v.lang === 'en-IN') ||
-      voices.find((v) => v.lang.toLowerCase().startsWith('en')) ||
-      null;
+    const personaObj = HUMAN_VOICE_PERSONAS.find((p) => p.id === selectedPersona);
+    const isFemalePersona = personaObj ? personaObj.gender === 'female' : true;
+
+    // Find best matching voice, preferring female voices if female persona is selected
+    const matchingVoices = voices.filter((v) => {
+      const nameLower = v.name.toLowerCase();
+      const langLower = v.lang.toLowerCase();
+      const isTargetLang =
+        (language === 'bn' && (langLower.startsWith('bn') || nameLower.includes('bengali'))) ||
+        (language === 'as' && (langLower.startsWith('bn') || langLower.startsWith('hi') || nameLower.includes('bengali') || nameLower.includes('hindi'))) ||
+        (language === 'hi' && (langLower.startsWith('hi') || nameLower.includes('hindi'))) ||
+        langLower.startsWith('en');
+
+      if (!isTargetLang) return false;
+      if (isFemalePersona) {
+        return (
+          nameLower.includes('female') ||
+          nameLower.includes('kalpana') ||
+          nameLower.includes('lekha') ||
+          nameLower.includes('zira') ||
+          nameLower.includes('hema') ||
+          nameLower.includes('puja') ||
+          (!nameLower.includes('male') && !nameLower.includes('hemant') && !nameLower.includes('david') && !nameLower.includes('george'))
+        );
+      }
+      return true;
+    });
+
+    const targetVoice = matchingVoices[0] || voices.find((v) => v.lang.toLowerCase().startsWith('en')) || voices[0] || null;
 
     let utteranceText = text;
-    let targetVoice = enVoice;
-    let langTag = 'en-IN';
+    let langTag = targetVoice ? targetVoice.lang : 'en-IN';
 
-    if (language === 'bn') {
-      if (bnVoice) {
-        targetVoice = bnVoice;
-        langTag = bnVoice.lang;
-      } else if (hiVoice) {
-        targetVoice = hiVoice;
-        utteranceText = activeScene.indicPhonetic.bn;
-        langTag = hiVoice.lang;
-      }
-    } else if (language === 'as') {
-      if (bnVoice) {
-        targetVoice = bnVoice;
-        langTag = bnVoice.lang;
-      } else if (hiVoice) {
-        targetVoice = hiVoice;
-        utteranceText = activeScene.indicPhonetic.as;
-        langTag = hiVoice.lang;
-      }
-    } else if (language === 'hi') {
-      if (hiVoice) {
-        targetVoice = hiVoice;
-        langTag = hiVoice.lang;
-      }
+    // If target Indic voice is not installed in the browser, fallback to English narration of the scene to guarantee sound
+    if ((language === 'bn' || language === 'as' || language === 'hi') && !matchingVoices.length) {
+      utteranceText = activeScene.narration.en;
+      langTag = 'en-US';
+    } else if (language === 'bn' || language === 'as') {
+      utteranceText = language === 'as' ? (activeScene.indicPhonetic?.as || text) : (activeScene.indicPhonetic?.bn || text);
     }
 
     const utterance = new SpeechSynthesisUtterance(utteranceText);
     utterance.rate = playbackSpeed;
-    utterance.pitch = 1.05; // Humanized melodic pitch
+    utterance.pitch = isFemalePersona ? 1.22 : 1.05; // Expressive feminine melodic pitch
     utterance.lang = langTag;
     if (targetVoice) utterance.voice = targetVoice;
 
     window.speechSynthesis.speak(utterance);
-    setActiveVoiceTitle('Natural Voice (Device Fallback)');
+    setActiveVoiceTitle(`✨ ${personaObj?.name || 'Studio Voice'} (Natural Audio)`);
     setIsRealHumanVoiceActive(false);
   };
 
@@ -437,13 +375,21 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
       const audio = audioElementRef.current;
       audio.src = wavBlobUrl;
       audio.playbackRate = playbackSpeed;
+      audio.volume = 1.0;
+      audio.muted = false;
 
       const personaObj = HUMAN_VOICE_PERSONAS.find((p) => p.id === selectedPersona);
       setActiveVoiceTitle(`✨ ${personaObj?.name || 'Real Human Voice'} (Studio HD)`);
       setIsRealHumanVoiceActive(true);
 
       if (isPlaying) {
-        await audio.play();
+        try {
+          await audio.play();
+          setAudioBlocked(false);
+        } catch (playErr) {
+          console.warn('Autoplay blocked by browser:', playErr);
+          setAudioBlocked(true);
+        }
       }
 
       setIsAudioLoading(false);
@@ -458,7 +404,12 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
       console.warn('Backend human voice unavailable, switching to humanized device speech:', err);
       setIsAudioLoading(false);
       if (isPlaying) {
-        speakBrowserFallback(sceneText, videoLang);
+        try {
+          speakBrowserFallback(sceneText, videoLang);
+          setAudioBlocked(false);
+        } catch {
+          setAudioBlocked(true);
+        }
       }
     }
   };
@@ -592,6 +543,9 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
                   key={l.code}
                   onClick={() => {
                     setVideoLang(l.code);
+                    if (l.code === 'as') {
+                      setSelectedPersona('pratibha-as-female');
+                    }
                     stopAllAudio();
                   }}
                   className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
@@ -631,6 +585,24 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
           {/* Animated Ambient Glow */}
           <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#17D5B3]/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-[#FF6F91]/10 rounded-full blur-3xl pointer-events-none" />
+
+          {audioBlocked && (
+            <div
+              onClick={() => {
+                setAudioBlocked(false);
+                if (audioElementRef.current) {
+                  audioElementRef.current.volume = 1.0;
+                  audioElementRef.current.play().catch(() => playHumanVoiceForScene(currentSceneIdx));
+                } else {
+                  playHumanVoiceForScene(currentSceneIdx);
+                }
+              }}
+              className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-[#FF6F91] text-[#050608] px-4 py-2 rounded-xl shadow-2xl font-black text-xs flex items-center gap-2 animate-bounce cursor-pointer border border-white/40"
+            >
+              <Volume2 className="w-4 h-4 animate-pulse" />
+              <span>🔊 Click Here to Enable Sound & Voice Narration</span>
+            </div>
+          )}
 
           {/* Video Scene Content Display */}
           <div className="relative z-10 space-y-4">
