@@ -1,0 +1,46 @@
+Categories:
+  - Office
+License: MIT
+AuthorName: Manisa Nameetei
+AuthorEmail: manisanameetei7@gmail.com
+WebSite: https://github.com/manisanameetei7-ux/My-hisap-Kitap-v2
+SourceCode: https://github.com/manisanameetei7-ux/My-hisap-Kitap-v2
+IssueTracker: https://github.com/manisanameetei7-ux/My-hisap-Kitap-v2/issues
+
+Name: Hisap Kitap
+Summary: Shop ledger and billing app for small businesses
+Description: |-
+  Hisap Kitap is a comprehensive shop ledger and billing app designed for small 
+  business owners. It helps track stock, sales, investments, customer dues, 
+  payments, invoices, and generate daily reports - all from one app.
+  
+  Features:
+  - Product stock-in and sale-out entries
+  - Investment and expense tracking
+  - Customer ledger with credit and payment records
+  - Cash, card, and UPI payment method tracking
+  - Invoice creation, PDF printing, and WhatsApp sharing
+  - UPI QR code support
+  - Low-stock alerts
+  - Daily and monthly reports
+  - Local data storage
+  - Multi-language support
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.0
+    gradle: yes
+    
+  - versionName: 2.0.0
+    versionCode: 4
+    commit: v2.0.0
+    gradle: yes
+
+AllowedAPKSigningKeys:
+  - 'Your signing key hash here (after first build)'
+
+UpdateCheckMode: Tags
+UpdateCheckIgnoreRegex: .*-beta
+CurrentVersion: 2.0.0
+CurrentVersionCode: 4
