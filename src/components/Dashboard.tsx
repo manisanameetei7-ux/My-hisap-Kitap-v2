@@ -16,10 +16,13 @@ import {
   Send,
   Video,
   Play,
+  BookOpen,
 } from 'lucide-react';
 import { Product, LedgerEntry, Customer, LanguageCode } from '../types';
 import { t } from '../data/translations';
 import { formatCurrency, formatDateTime } from '../utils/formatters';
+import { generateFeaturesOnlyPdf } from '../utils/pdfGenerator';
+import { Download } from 'lucide-react';
 
 interface DashboardProps {
   lang: LanguageCode;
@@ -35,6 +38,7 @@ interface DashboardProps {
   onOpenAddProduct: () => void;
   onOpenPaymentQr: (customer: Customer) => void;
   onOpenInvoice: (entry: LedgerEntry) => void;
+  onOpenPdfManual?: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -51,6 +55,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onOpenAddProduct,
   onOpenPaymentQr,
   onOpenInvoice,
+  onOpenPdfManual,
 }) => {
   const topDues = [...customers]
     .filter((c) => c.balance > 0)
@@ -98,7 +103,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <Plus className="w-4 h-4 text-[#17D5B3]" />
               <span>{t('addProduct', lang)}</span>
             </button>
+
+            <button
+              onClick={() => generateFeaturesOnlyPdf()}
+              className="flex items-center gap-2 bg-[#161C23] hover:bg-[#26313B] text-[#17D5B3] border border-[#17D5B3]/40 hover:border-[#17D5B3] font-bold px-3.5 py-2.5 rounded-xl transition-all text-sm shadow-md"
+              title="Download PDF Guide: Dashboard, Account, Products, Billing, Invoices, Khata, Reports & HelpDesk"
+            >
+              <Download className="w-4 h-4" />
+              <span>Feature Guide (.pdf)</span>
+            </button>
           </div>
+
         </div>
       </div>
 
@@ -417,13 +432,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => onNavigateTab('help')}
-          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#FF6F91] hover:bg-[#FF557F] text-[#050608] text-xs font-black flex items-center justify-center gap-2 transition-transform active:scale-95 shrink-0 shadow-md"
-        >
-          <Play className="w-4 h-4 fill-current" />
-          <span>Watch Video Tutorials</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {onOpenPdfManual && (
+            <button
+              onClick={onOpenPdfManual}
+              className="w-full sm:w-auto px-3.5 py-2.5 rounded-xl bg-[#161C23] border border-[#54B6FF]/40 hover:bg-[#54B6FF]/15 text-[#54B6FF] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>PDF User Manual</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => onNavigateTab('help')}
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#FF6F91] hover:bg-[#FF557F] text-[#050608] text-xs font-black flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-md"
+          >
+            <Play className="w-4 h-4 fill-current" />
+            <span>Watch Video Tutorials</span>
+          </button>
+        </div>
       </div>
     </div>
   );

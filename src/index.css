@@ -23,23 +23,33 @@
   }
 }
 
-/* Print styles for invoices and reports */
+/* Print styles for invoices, reports and tutorial PDF manuals */
 @media print {
+  @page {
+    margin: 12mm 10mm 12mm 10mm;
+    size: auto;
+  }
   body {
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #111827 !important;
   }
-  .no-print {
+  .no-print, header, nav, footer {
     display: none !important;
   }
   .print-only {
     display: block !important;
   }
   .printable-card {
-    border: 1px solid #ddd !important;
+    border: none !important;
     box-shadow: none !important;
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #111827 !important;
+    padding: 0 !important;
+  }
+  .printable-card * {
+    color: #111827 !important;
+    background-color: transparent !important;
+    border-color: #e5e7eb !important;
   }
 }
 

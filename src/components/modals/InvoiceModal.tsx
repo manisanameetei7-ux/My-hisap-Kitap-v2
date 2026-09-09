@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Receipt, Printer, X, Download, Share2, Check } from 'lucide-react';
 import { LedgerEntry, LanguageCode } from '../../types';
 import { t } from '../../data/translations';
 import { formatCurrency, formatDateTime } from '../../utils/formatters';
 import { DEFAULT_STORE_INFO } from '../../data/starterData';
+import { generateInvoicePdf, safePrintHtml } from '../../utils/pdfGenerator';
+import { BarcodeImage } from '../BarcodeImage';
 
 interface InvoiceModalProps {
   isOpen: boolean;
@@ -24,10 +26,28 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
   storePhone = DEFAULT_STORE_INFO.supportPhone,
   storeAddress = DEFAULT_STORE_INFO.address,
 }) => {
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+
   if (!isOpen || !entry) return null;
 
+  const handleDownloadPdf = () => {
+    setIsDownloadingPdf(true);
+    try {
+      generateInvoicePdf(entry, storeName, storePhone, storeAddress);
+    } catch (err) {
+      console.error('Invoice PDF error:', err);
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
+
   const handlePrint = () => {
-    window.print();
+    const printableElement = document.getElementById('printable-invoice-sheet');
+    if (printableElement) {
+      safePrintHtml(printableElement.innerHTML, `Invoice #${entry.id.replace('entry-', '').toUpperCase().slice(0, 8)}`);
+    } else {
+      window.print();
+    }
   };
 
   const lines =
@@ -55,10 +75,20 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] rounded-lg text-xs font-bold transition-colors"
+              onClick={handleDownloadPdf}
+              disabled={isDownloadingPdf}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] rounded-lg text-xs font-black transition-all cursor-pointer disabled:opacity-50"
+              title="Download Invoice as PDF"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5" />
+              <span>{isDownloadingPdf ? 'PDF...' : 'Save PDF'}</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[#F4F8FB] rounded-lg text-xs font-bold transition-colors"
+              title="Print Invoice"
+            >
+              <Printer className="w-3.5 h-3.5 text-[#17D5B3]" />
               <span>{t('printInvoice', lang)}</span>
             </button>
             <button onClick={onClose} className="p-1.5 rounded-lg bg-[#161C23] hover:bg-[#26313B] text-[#A8B5C2]">
@@ -68,7 +98,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
         </div>
 
         {/* Printable Invoice Sheet */}
-        <div className="space-y-4 text-xs">
+        <div id="printable-invoice-sheet" className="space-y-4 text-xs">
           {/* Store Branding Header */}
           <div className="text-center border-b border-[#26313B] pb-3">
             <h2 className="text-lg font-black text-[#F4F8FB]">{storeName}</h2>
@@ -155,10 +185,21 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
             )}
           </div>
 
-          {/* Footer Note */}
-          <div className="text-center text-[10px] text-[#A8B5C2] pt-2 border-t border-[#26313B]">
-            <p>Thank you for shopping with us! Please visit again.</p>
-            <p className="mt-0.5">Powered by hisapkitap • Smart Shop Ledger</p>
+          {/* Invoice Barcode & Footer Note */}
+          <div className="flex flex-col items-center justify-center pt-2 border-t border-[#26313B] space-y-1 text-center">
+            <div className="bg-white p-1.5 rounded-lg border border-[#E2E8F0] shadow-sm">
+              <BarcodeImage
+                value={entry.id.replace('entry-', '').toUpperCase().slice(0, 10)}
+                productName={`Invoice-${entry.id.slice(-6)}`}
+                width={1.2}
+                height={26}
+                fontSize={9}
+                displayValue={true}
+                showActions={false}
+              />
+            </div>
+            <p className="text-[10px] text-[#A8B5C2]">Thank you for shopping with us! Please visit again.</p>
+            <p className="text-[9px] text-[#A8B5C2]/70">Powered by hisapkitap • Smart Shop Ledger & POS</p>
           </div>
         </div>
       </div>

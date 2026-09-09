@@ -1,5 +1,6 @@
 import { Product, LedgerEntry, Customer, CustomerLedgerEntry, AppUser, LanguageCode } from '../types';
 import { STARTER_PRODUCTS, STARTER_CUSTOMERS, DEFAULT_USER, INITIAL_ENTRIES, INITIAL_CUSTOMER_ENTRIES } from '../data/starterData';
+import { getMatchingProductImage } from '../data/productImagePresets';
 
 const KEYS = {
   PRODUCTS: 'hisap_kitap_products_v1',
@@ -32,14 +33,68 @@ export function getStoredProducts(): Product[] {
       return STARTER_PRODUCTS;
     }
     const stored: Product[] = JSON.parse(raw);
-    const existingIds = new Set(stored.map((p) => p.id));
+    const starterMap = new Map<string, Product>(STARTER_PRODUCTS.map((p) => [p.id, p]));
+
+    // Upgrade existing stored products with updated authentic images
+    let hasChanges = false;
+    const upgraded = stored.map((p) => {
+      const starterMatch = starterMap.get(p.id);
+      if (starterMatch && starterMatch.imageUrl && p.imageUrl !== starterMatch.imageUrl) {
+        hasChanges = true;
+        return {
+          ...p,
+          imageUrl: starterMatch.imageUrl,
+          name: p.name || starterMatch.name,
+        };
+      }
+      
+      const matchedImg = getMatchingProductImage(p.name, p.category);
+      if (!p.imageUrl || (matchedImg && p.imageUrl.startsWith('https://images.unsplash.com/photo-') && p.imageUrl !== matchedImg)) {
+        // If it was matching a key staple or had no image, apply the accurate asset image
+        const query = p.name.toLowerCase();
+        if (
+          query.includes('poha') ||
+          query.includes('besan') ||
+          query.includes('sabudana') ||
+          query.includes('suji') ||
+          query.includes('rava') ||
+          query.includes('vermicelli') ||
+          query.includes('sevai') ||
+          query.includes('oats') ||
+          query.includes('atta') ||
+          query.includes('basmati')
+        ) {
+          hasChanges = true;
+          return {
+            ...p,
+            imageUrl: matchedImg,
+          };
+        }
+      }
+
+      if (!p.imageUrl) {
+        hasChanges = true;
+        return {
+          ...p,
+          imageUrl: getMatchingProductImage(p.name, p.category),
+        };
+      }
+      return p;
+    });
+
+    // Merge any new starter items
+    const existingIds = new Set(upgraded.map((p) => p.id));
     const newStarterItems = STARTER_PRODUCTS.filter((p) => !existingIds.has(p.id));
     if (newStarterItems.length > 0) {
-      const merged = [...stored, ...newStarterItems];
+      const merged = [...upgraded, ...newStarterItems];
       saveStoredProducts(merged);
       return merged;
     }
-    return stored;
+
+    if (hasChanges) {
+      saveStoredProducts(upgraded);
+    }
+    return upgraded;
   } catch (e) {
     console.error('Error loading products from storage:', e);
     return STARTER_PRODUCTS;

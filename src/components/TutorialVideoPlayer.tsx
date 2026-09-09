@@ -22,6 +22,10 @@ import {
   Radio,
   Loader2,
   ShieldCheck,
+  BookOpen,
+  Building,
+  LayoutDashboard,
+  Film,
 } from 'lucide-react';
 import { LanguageCode } from '../types';
 import { LANGUAGES } from '../data/translations';
@@ -61,177 +65,198 @@ export interface TutorialGuide {
 
 export const TUTORIAL_DATA: TutorialGuide[] = [
   {
-    id: 'pos-billing',
-    title: 'POS Fast Billing & Receipt Printing',
-    category: 'Billing & POS',
-    durationSec: 45,
-    description: 'Learn how to add products to the POS cart, apply discounts, settle split payments, and print GST tax invoices.',
+    id: 'complete-app-tutorial',
+    title: 'Hisap Kitap - Complete App Video Tutorial',
+    category: 'Full Application Guide',
+    durationSec: 180,
+    description: 'The complete end-to-end master video guide covering store setup, product inventory, POS fast billing, thermal receipts, customer credit (Udhar), dynamic UPI QR codes, and offline backups.',
     scenes: [
       {
-        title: 'Step 1: Open POS & Search Items',
-        description: 'Navigate to Quick Entry / POS tab and search or scan product barcode.',
+        title: 'Chapter 1: Store Profile & Security PIN Setup',
+        description: 'Set up your shop business name, contact phone, store address, UPI ID, and 4-digit security PIN lock.',
         narration: {
-          en: 'Welcome to Hisab Kitap Point of Sale billing. Open the Quick Entry tab and select items from your catalog or scan barcodes.',
+          en: 'Welcome to Hisap Kitap. Start by setting up your Store Profile with your business name, address, UPI payment ID, and a secure 4-digit PIN to lock your finances.',
+          as: 'হিচাপ কিতাপলৈ আপোনাক স্বাগতম। প্ৰথমে আপোনাৰ দোকানৰ নাম, ঠিকনা, ইউপিআই পৰিশোধ আইডি আৰু বিত্তীয় সুৰক্ষাৰ বাবে ৪টা সংখ্যাৰ পিন ছেট কৰক।',
+          hi: 'हिसाब किताब में आपका स्वागत है। सबसे पहले अपनी दुकान का नाम, पता, यूपीआई आईडी और वित्तीय सुरक्षा के लिए ४ अंकों का मास्टर पिन सेट करें।',
+          bn: 'হিসাব কিতাবে আপনাকে স্বাগতম। প্রথমে আপনার দোকানের নাম, ঠিকানা, ইউপিআই আইডি এবং আর্থিক সুরক্ষার জন্য ৪ অঙ্কের পিন সেট করুন।',
         },
-        icon: ShoppingCart,
-        screenType: 'pos',
-        highlights: ['Select products from catalog', 'Live barcode scanner available', 'Instant subtotal & tax computation'],
+        indicPhonetic: {
+          as: 'Hisap Kitapoloi apunak swagatam. Prothome apunar dokanor naam, thikana, UPI ID aru 4-digit PIN set korók.',
+          bn: 'Hisap Kitabe apnake swagotom. Prothome aponar dokaner naam, thikana, UPI ID ebong 4-digit PIN set korun.',
+        },
+        icon: Building,
+        screenType: 'backup',
+        highlights: ['Store name & contact setup', 'Instant UPI QR payment integration', '4-digit master PIN protection'],
         simulatedData: {
-          items: [
-            { name: 'Fortune Sunlite Sunflower Oil 1L', qty: 2, price: 145 },
-            { name: 'Aashirvaad Superior MP Shudh Chakki Atta 5kg', qty: 1, price: 260 },
-          ],
-          total: 550,
-          discount: 20,
-          net: 530,
+          status: 'STORE PROFILE CONFIGURED',
+          name: 'Guwahati Mega Mart',
+          upi: 'storename@upi',
+          pin: '**** (Active Lock)',
         },
       },
       {
-        title: 'Step 2: Customer Selection & Payment Mode',
-        description: 'Link a customer to log Udhar balance, or proceed as Cash / UPI Walk-in.',
+        title: 'Chapter 2: Live Dashboard & Financial Matrix',
+        description: 'Monitor daily sales, gross profit percentage, net cash in drawer, and orange low-stock alert badges.',
         narration: {
-          en: 'Choose an existing customer for credit sales, or select Cash or UPI for instant settlement.',
+          en: 'Your live Dashboard displays real-time sales, gross profit margin, net cash in drawer, customer dues, and low stock warnings.',
+          as: 'আপোনাৰ লাইভ ডেশ্বব’ৰ্ডত তৎকালীন বিক্ৰী, লাভৰ শতাংশ, নগদ ধন, বাকী ধন আৰু কম ষ্টকৰ সতৰ্কবাৰ্তা স্পষ্টকৈ দেখা পোৱা যায়।',
+          hi: 'आपका लाइव डैशबोर्ड आज की कुल बिक्री, मुनाफे का प्रतिशत, गल्ले में नकद राशि, ग्राहकों की उधारी और कम स्टॉक की चेतावनी दिखाता है।',
+          bn: 'আপনার লাইভ ড্যাশবোর্ডে আজকের মোট বিক্রি, লাভের শতাংশ, ক্যাশ ড্রয়ারের টাকা, গ্রাহকের বাকি এবং কম স্টকের সতর্কতা দেখতে পাবেন।',
         },
-        icon: Users,
+        indicPhonetic: {
+          as: 'Apunar live dashboard-ot tatkshanik bikri, labhor shotangsho, nogod dhon aru kom stock-or sotorkobarta dekha jaay.',
+          bn: 'Aponar live dashboard-e ajker mot bikri, labher percentage, nogod taka ebong kom stocker shotorkota dekhte paben.',
+        },
+        icon: LayoutDashboard,
         screenType: 'pos',
-        highlights: ['Log split cash + credit', 'Auto calculate customer pending balance', 'Supports UPI, Cash & Cards'],
+        highlights: ['Real-time Today Sales & Net Profit', 'Orange Low-Stock Reorder Badges', 'Instant Action Shortcuts'],
         simulatedData: {
-          customer: 'Ramesh Sharma (Shop Regular)',
-          paid: 300,
-          due: 230,
-          paymentMethod: 'UPI',
+          invoiceNo: 'DASHBOARD ACTIVE',
+          net: 18450,
+          status: 'Real-Time Sync',
         },
       },
       {
-        title: 'Step 3: Complete Sale & Print Tax Invoice',
-        description: 'Click Complete Sale to auto-deduct stock and generate clean 80mm thermal receipt or WhatsApp bill.',
+        title: 'Chapter 3: Adding Products & Managing Inventory',
+        description: 'Add items across 8 categories, enter cost vs selling price for automatic margin calculation, and set stock thresholds.',
         narration: {
-          en: 'Click Complete Sale to generate an instant printable GST tax invoice and dispatch a WhatsApp receipt to the customer.',
+          en: 'Add products into eight organized categories. Set purchase cost and selling price, and Hisap Kitap calculates your profit margin automatically.',
+          as: 'মুদি, ষ্টেচনেৰী আদি ৮টা শ্ৰেণীত সামগ্ৰী যোগ কৰক। ক্ৰয় আৰু বিক্ৰী মূল্য দিলেই লাভৰ শতাংশ স্বয়ংক্ৰিয়ভাৱে গণনা হয়।',
+          hi: 'किराना, स्टेशनरी सहित ८ श्रेणियों में उत्पाद जोड़ें। खरीद और बिक्री मूल्य दर्ज करें, और हिसाब किताब अपने आप मुनाफा प्रतिशत निकाल देगा।',
+          bn: 'মুদি, স্টেশনারি সহ ৮টি ক্যাটাগরিতে পণ্য যোগ করুন। কেনা ও বিক্রির দাম দিলেই লাভের মার্জিন নিজে থেকেই হিসাব হয়ে যাবে।',
         },
-        icon: Receipt,
-        screenType: 'pos',
-        highlights: ['80mm & A4 Print Formats', 'Direct WhatsApp share link', 'Inventory automatically deducted'],
-        simulatedData: {
-          invoiceNo: 'HK-2026-08492',
-          status: 'PAID & RECORDED',
-          timestamp: 'Just now',
-        },
-      },
-    ],
-  },
-  {
-    id: 'product-inventory',
-    title: 'Managing Products & Low Stock Alerts',
-    category: 'Inventory Management',
-    durationSec: 40,
-    description: 'Add new products, set purchase vs sale prices, manage categories, and configure low-stock safety thresholds.',
-    scenes: [
-      {
-        title: 'Step 1: Add New Product & Category',
-        description: 'Click "+ Add Product" and specify product category, unit, buy price, and sell price.',
-        narration: {
-          en: 'Manage your entire shop inventory with eight organized categories including Grocery, Stationery, Beverages, and Household items.',
+        indicPhonetic: {
+          as: 'Mudi, stationery aadi aat-ta shrenit samogri jog korók. Kroy aru bikri mulya dilei labhor shotangsho gonona hoy.',
+          bn: 'Mudi, stationery shoho aat-ti category-te ponno jog korun. Kena o bikrir daam dilei laabh hisab hoye jabe.',
         },
         icon: Package,
         screenType: 'products',
-        highlights: ['8 Comprehensive Categories', 'Margin % auto calculated', 'Barcode assignment'],
+        highlights: ['8 Organized Retail Categories', 'Automated Profit Margin % Calculation', 'Low-Stock Reorder Threshold'],
         simulatedData: {
           name: 'Tata Tea Gold Leaf Pouch 500g',
           buyPrice: 240,
           sellPrice: 280,
           margin: '16.7% Profit',
+          status: 'Catalog Verified',
         },
       },
       {
-        title: 'Step 2: Low Stock Warning Thresholds',
-        description: 'Set custom low-stock trigger levels so you never run out of fast-selling essentials.',
+        title: 'Chapter 4: Quick POS Billing & Checkout',
+        description: 'Scan barcodes or search items, adjust quantities, select customers, and settle split cash and credit payments.',
         narration: {
-          en: 'Set low stock warning triggers so you receive instant alerts on your dashboard when stock is running out.',
+          en: 'In the Quick Entry POS screen, search or scan items to add them to cart. Enter paid cash amount, and any remaining balance is automatically logged to credit.',
+          as: 'কুইক এণ্ট্ৰী পইণ্ট অব চেল স্ক্ৰীণত সামগ্ৰী স্কেন বা সন্ধান কৰি কাৰ্টত দিয়ক। পৰিশোধিত ধন দিয়ক আৰু বাকী থকা ধন স্বয়ংক্ৰিয়ভাৱে বাকী খাতাত জমা হ’ব।',
+          hi: 'क्विक एंट्री पीओएस स्क्रीन पर बारकोड स्कैन करें या नाम खोजकर कार्ट में जोड़ें। प्राप्त नकद दर्ज करें, बाकी राशि सीधे उधारी खाते में दर्ज हो जाएगी।',
+          bn: 'কুইক এন্ট্রি পিওএস স্ক্রিনে বারকোড স্ক্যান বা নাম খুঁজে কার্টে পণ্য নিন। নগদ টাকা দিন, বাকি টাকা নিজে থেকেই খাতার হিসাবে জমা হবে।',
         },
-        icon: Sparkles,
-        screenType: 'products',
-        highlights: ['Orange alert badges on Dashboard', 'Restock recommendation table', 'Export stock audit reports'],
+        indicPhonetic: {
+          as: 'Quick entry POS screen-ot samogri scan ba sondhan kori cart-ot diyók. Porishodhito dhon diyók aru baki dhon baki khatat joma hobo.',
+          bn: 'Quick entry POS screen-e ponno scan ba khuje cart-e nin. Nogod taka din, baki taka khatar hisabe joma hobe.',
+        },
+        icon: ShoppingCart,
+        screenType: 'pos',
+        highlights: ['Barcode Scanner support', 'Split Cash / UPI / Udhar settlement', 'Dynamic Inventory Stock reduction'],
         simulatedData: {
-          currentStock: 4,
-          alertThreshold: 5,
-          status: '⚠️ LOW STOCK ALERT TRIGGERED',
+          items: [
+            { name: 'Fortune Sunlite Sunflower Oil 1L', qty: 2, price: 145 },
+            { name: 'Aashirvaad Shudh Chakki Atta 5kg', qty: 1, price: 260 },
+          ],
+          total: 550,
+          discount: 20,
+          net: 530,
+          customer: 'Ramesh Sharma (Shop Regular)',
+          paid: 300,
+          due: 230,
         },
       },
-    ],
-  },
-  {
-    id: 'customer-khata',
-    title: 'Customer Khata (Udhar) & WhatsApp Reminders',
-    category: 'Customer Udhar',
-    durationSec: 45,
-    description: 'Keep accurate credit ledgers, log daily payments, show dynamic UPI QR codes, and send WhatsApp payment links.',
-    scenes: [
       {
-        title: 'Step 1: Open Customer Profile & Balance',
-        description: 'Search customer name or mobile number to view lifetime credit and pending dues.',
+        title: 'Chapter 5: Generating Invoices & Thermal Printing',
+        description: 'Download crisp vector PDF invoices, print to 80mm thermal receipt printers, or share directly on WhatsApp.',
         narration: {
-          en: 'Track every customer credit account accurately. View outstanding credit balances and transaction histories.',
+          en: 'Instantly download vector PDF invoices, print 80 millimeter thermal receipts, or send digital bills directly to your customer on WhatsApp with payment links.',
+          as: 'তৎকালীন ভেক্টৰ পিডিএফ ইনভইচ ডাউনল’ড কৰক, ৮০ মিলিমিটাৰ থাৰ্মেল প্ৰিণ্ট কৰক বা লিংকৰ সৈতে গ্ৰাহকলৈ হোৱাটছএপত ডিজিটেল বিল পঠিয়াওক।',
+          hi: 'तुरंत वेक्टर पीडीएफ इनवॉइस डाउनलोड करें, ८० मिमी थर्मल रसीद प्रिंट करें या ग्राहक को ऑनलाइन पेमेंट लिंक के साथ सीधे व्हाट्सएप पर डिजिटल बिल भेजें।',
+          bn: 'সাথে সাথে ভেক্টর পিডিএফ ইনভয়েস ডাউনলোড করুন, ৮০ মিমি থার্মাল প্রিন্ট করুন অথবা গ্রাহককে হোয়াটসঅ্যাপে ডিজিটাল বিল পাঠান।',
+        },
+        indicPhonetic: {
+          as: 'Tatkshanik vector PDF invoice download korók, 80mm thermal print korók ba WhatsApp-ot digital bill pothiyawok.',
+          bn: 'Sathe sathe vector PDF invoice download korun, 80mm thermal print korun ba WhatsApp-e digital bill pathan.',
+        },
+        icon: Receipt,
+        screenType: 'pos',
+        highlights: ['Crisp Vector PDF Downloads', '80mm / 58mm Thermal Printer Support', '1-Click WhatsApp digital bill sharing'],
+        simulatedData: {
+          invoiceNo: 'HK-2026-08492',
+          status: 'PAID & RECORDED',
+          net: 530,
+        },
+      },
+      {
+        title: 'Chapter 6: Customer Khata (Udhar) & Repayments',
+        description: 'Keep a clean ledger of all customer debits, search by mobile number, and record cash/UPI repayments.',
+        narration: {
+          en: 'Track every customer credit account accurately. Search by mobile number, view complete purchase history, and log repayments with a single click.',
+          as: 'প্ৰতিজন গ্ৰাহকৰ বাকী খাতা নিৰ্ভুলভাৱে পৰীক্ষা কৰক। মোবাইল নম্বৰৰে সন্ধান কৰক আৰু পৰিশোধ কৰা ধন এটা ক্লিকেই জমা কৰক।',
+          hi: 'हर ग्राहक का उधारी खाता सटीकता से ट्रैक करें। मोबाइल नंबर से सर्च करें, पूरा खरीद इतिहास देखें और एक क्लिक में भुगतान दर्ज करें।',
+          bn: 'প্রতিটি গ্রাহকের বাকি খাতা নিখুঁতভাবে পরিচালনা করুন। মোবাইল নম্বর দিয়ে খুঁজুন এবং এক ক্লিকেই জমা টাকা এন্ট্রি করুন।',
+        },
+        indicPhonetic: {
+          as: 'Protijon grahokor baki khata nirbhulbhabe porikhon korók. Mobile number-e sondhan korók aru porishodh joma korók.',
+          bn: 'Protiti grahoker baki khata nikhutbhabe track korun. Mobile number diye khujun ebong joma taka entry korun.',
         },
         icon: Users,
         screenType: 'customer',
-        highlights: ['Real-time outstanding calculation', 'Full credit & debit ledger history', 'One-click call & WhatsApp'],
+        highlights: ['Search by Customer Mobile / Name', 'Full Timestamped Ledger History', 'Instant Udhar Repayment Logging'],
         simulatedData: {
           customer: 'Anjali Devi',
           phone: '+91 98765 43210',
           totalDue: 1450,
-          lastEntry: 'Yesterday - Groceries on credit (₹450)',
+          whatsappMsg: 'Namaste Anjali ji, your pending store due is Rs. 1,450.',
         },
       },
       {
-        title: 'Step 2: Generate Dynamic UPI QR & Reminders',
-        description: 'Display an instant pre-filled UPI QR code or send a polite WhatsApp payment reminder.',
+        title: 'Chapter 7: Dynamic UPI QR & Payment Reminders',
+        description: 'Generate customer-specific UPI QR codes pre-filled with exact balance and send polite automated WhatsApp reminders.',
         narration: {
-          en: 'Generate dynamic UPI QR codes with payment amount pre-filled, and send automated WhatsApp reminders with payment links.',
+          en: 'Generate dynamic UPI QR codes with exact outstanding balance, and send automated polite WhatsApp reminders with direct UPI payment links.',
+          as: 'মুঠ বাকী ধনৰ বাবে ডাইনামিক ইউপিআই কিউআৰ ক’ড উলিয়াওক আৰু পেমেণ্ট লিংকৰ সৈতে হোৱাটছএপত স্বয়ংক্ৰিয় বাকী ধনৰ সোঁৱৰণী পঠিয়াওক।',
+          hi: 'बकाया राशि का डायनामिक यूपीआई क्यूआर कोड बनाएं और भुगतान लिंक के साथ व्हाट्सएप पर स्वचालित विनम्र तगादा भेजें।',
+          bn: 'বকেয়া টাকার ডায়নামিক ইউপিআই কিউআর কোড তৈরি করুন এবং পেমেন্ট লিংক সহ হোয়াটসঅ্যাপে তাগাদা পাঠান।',
+        },
+        indicPhonetic: {
+          as: 'Muth baki dhonor babe dynamic UPI QR code uliyawok aru WhatsApp-ot baki dhonor soworoni pothiyawok.',
+          bn: 'Bokeya takar dynamic UPI QR code toiri korun ebong WhatsApp-e tagada pathan.',
         },
         icon: QrCode,
         screenType: 'customer',
-        highlights: ['GPay / PhonePe / Paytm compatible', 'Direct UPI intent links', 'Itemized bill breakdown attached'],
+        highlights: ['Compatible with GPay, PhonePe, Paytm, BHIM', 'Automated polite WhatsApp text message', 'Direct payment link attached'],
         simulatedData: {
+          customer: 'Anjali Devi',
           upiId: 'manisanameetei7@okicici',
-          amount: 1450,
-          whatsappMsg: 'Namaste Anjali ji, your pending store due is ₹1,450. Click to pay via UPI: https://upi.link/..',
+          totalDue: 1450,
+          whatsappMsg: 'Namaste Anjali ji, your pending store due is Rs. 1,450. Click to pay via UPI: https://upi.link/..',
         },
       },
-    ],
-  },
-  {
-    id: 'backup-sync',
-    title: 'Backup, Restore & Data Security',
-    category: 'Data & Security',
-    durationSec: 35,
-    description: 'Download full offline backups, restore store ledgers, and secure shop data.',
-    scenes: [
       {
-        title: 'Step 1: Secure Data & Backup Management',
-        description: 'Keep your store ledger safe by downloading offline JSON backups anytime.',
+        title: 'Chapter 8: Financial Reports & 100% Offline Backup',
+        description: 'Generate detailed P&L PDF reports, export Excel CSV spreadsheets for tax, and download offline JSON database snapshots.',
         narration: {
-          en: 'Hisab Kitap ensures 100 percent data privacy with local storage and instant JSON backups.',
+          en: 'Export comprehensive Profit and Loss PDF reports, Excel CSV spreadsheets, and download 100% secure offline JSON backups of your entire store.',
+          as: 'সম্পূৰ্ণ লাভ-লোকচানৰ পিডিএফ ৰিপ’ৰ্ট, এক্সেল চিএছভি ফাইল আৰু আপোনাৰ দোকানৰ তথ্যৰ ১০০% নিৰাপদ অফলাইন জেছন বেকআপ ডাউনল’ড কৰক।',
+          hi: 'विस्तृत लाभ-हानि पीडीएफ रिपोर्ट, एक्सेल सीएसवी फाइल बनाएं और अपनी पूरी दुकान का १००% सुरक्षित ऑफलाइन जेसन बैकअप डाउनलोड करें।',
+          bn: 'লাভ-ক্ষতির বিস্তারিত পিডিএফ রিপোর্ট, এক্সেল সিএসভি স্প্রেডশিট এবং ১০০% নিরাপদ অফলাইন জেএসওএন ব্যাকআপ ডাউনলোড করুন।',
+        },
+        indicPhonetic: {
+          as: 'Sompurno labh-loksanor PDF report, Excel CSV file aru dokanor 100% nirapodh offline JSON backup download korók.',
+          bn: 'Labh-khotir bistarito PDF report, Excel CSV file ebong dokaner 100% nirapod offline JSON backup download korun.',
         },
         icon: ShieldCheck,
         screenType: 'backup',
-        highlights: ['Instant JSON backups', 'Secure local storage', 'Zero data loss risk'],
+        highlights: ['Comprehensive P&L PDF Financial Statements', 'Excel / CSV Spreadsheet Export', '100% Offline JSON Backup & Privacy'],
         simulatedData: {
-          selected: 'Secure Local Storage',
-        },
-      },
-      {
-        title: 'Step 2: Export JSON Backup & Restore Ledger',
-        description: 'Export complete backups of your shop data anytime and restore them securely on any new device.',
-        narration: {
-          en: 'Export complete backups of your shop data anytime and restore them securely on any new device.',
-        },
-        icon: Database,
-        screenType: 'backup',
-        highlights: ['Encrypted JSON local storage backup', 'CSV spreadsheets for accountant', 'Secure PIN lock'],
-        simulatedData: {
+          status: 'BACKUP READY & ENCRYPTED',
           backupFile: 'hisapkitap_backup_2026.json',
-          size: '42.8 KB',
-          status: 'VERIFIED & COMPLETE',
+          size: '48.2 KB',
         },
       },
     ],
@@ -242,12 +267,14 @@ interface TutorialVideoPlayerProps {
   initialTutorialIndex?: number;
   lang: LanguageCode;
   onClose: () => void;
+  onOpenPdfManual?: () => void;
 }
 
 export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   initialTutorialIndex = 0,
   lang,
   onClose,
+  onOpenPdfManual,
 }) => {
   const [selectedTutorialIdx, setSelectedTutorialIdx] = useState(initialTutorialIndex);
   const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
@@ -258,7 +285,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   const [videoLang, setVideoLang] = useState<LanguageCode>(lang);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<string>(
-    lang === 'as' ? 'pratibha-as-female' : 'Kore'
+    lang === 'as' ? 'pratibha-as-female' : lang === 'hi' ? 'ananya-hi-female' : 'kore-female'
   );
   const [isAudioLoading, setIsAudioLoading] = useState<boolean>(false);
   const [isRealHumanVoiceActive, setIsRealHumanVoiceActive] = useState<boolean>(true);
@@ -521,8 +548,9 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
             </div>
             <div className="truncate">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF6F91]">
-                  Video Tutorial #{selectedTutorialIdx + 1}
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF6F91] flex items-center gap-1">
+                  <Film className="w-3 h-3" />
+                  Complete Master Tutorial
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#17D5B3]/20 text-[#17D5B3] text-[10px] font-extrabold border border-[#17D5B3]/40">
                   <Sparkles className="w-2.5 h-2.5" />
@@ -545,6 +573,12 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
                     setVideoLang(l.code);
                     if (l.code === 'as') {
                       setSelectedPersona('pratibha-as-female');
+                    } else if (l.code === 'hi') {
+                      setSelectedPersona('ananya-hi-female');
+                    } else if (l.code === 'bn') {
+                      setSelectedPersona('kore-female');
+                    } else {
+                      setSelectedPersona('kore-female');
                     }
                     stopAllAudio();
                   }}
@@ -558,6 +592,20 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
                 </button>
               ))}
             </div>
+
+            {onOpenPdfManual && (
+              <button
+                onClick={() => {
+                  stopAllAudio();
+                  onOpenPdfManual();
+                }}
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#54B6FF]/15 border border-[#54B6FF]/40 text-[#54B6FF] hover:bg-[#54B6FF]/25 text-xs font-bold transition-all shadow-sm"
+                title="View & Download PDF Tutorial Manual"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>PDF Manual</span>
+              </button>
+            )}
 
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
@@ -938,30 +986,51 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
           </div>
         </div>
 
-        {/* Video Tutorial Playlist & Guide Switcher */}
+        {/* Chapter Navigation Timeline Strip */}
         <div className="p-3 sm:p-4 bg-[#161C23] border-t border-[#26313B] overflow-x-auto">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#A8B5C2] flex items-center gap-1.5">
+              <Film className="w-3.5 h-3.5 text-[#FF6F91]" />
+              Video Chapters ({activeTutorial.scenes.length} Steps)
+            </span>
+            <span className="text-[10px] font-mono text-[#17D5B3]">
+              Playing: Chapter {currentSceneIdx + 1} of {totalScenes}
+            </span>
+          </div>
           <div className="flex items-center gap-2 min-w-max">
-            {TUTORIAL_DATA.map((tut, idx) => (
-              <button
-                key={tut.id}
-                onClick={() => handleSelectTutorial(idx)}
-                className={`p-2.5 rounded-xl border text-left transition-all max-w-[220px] ${
-                  selectedTutorialIdx === idx
-                    ? 'bg-[#101419] border-[#FF6F91] shadow-md ring-1 ring-[#FF6F91]'
-                    : 'bg-[#101419]/60 border-[#26313B] hover:border-[#A8B5C2]/40 opacity-80 hover:opacity-100'
-                }`}
-              >
-                <div className="flex items-center justify-between text-[10px] font-bold text-[#A8B5C2] mb-1">
-                  <span className={selectedTutorialIdx === idx ? 'text-[#FF6F91]' : ''}>
-                    Video #{idx + 1}
-                  </span>
-                  <span>⏱️ {tut.durationSec}s</span>
-                </div>
-                <div className="text-xs font-bold text-[#F4F8FB] truncate">
-                  {tut.title}
-                </div>
-              </button>
-            ))}
+            {activeTutorial.scenes.map((scene, idx) => {
+              const SceneIcon = scene.icon;
+              const isCurrent = currentSceneIdx === idx;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setCurrentSceneIdx(idx);
+                    setProgress(0);
+                    setIsPlaying(true);
+                  }}
+                  className={`p-2.5 rounded-xl border text-left transition-all max-w-[210px] flex items-start gap-2 ${
+                    isCurrent
+                      ? 'bg-[#101419] border-[#FF6F91] shadow-md ring-1 ring-[#FF6F91]'
+                      : 'bg-[#101419]/60 border-[#26313B] hover:border-[#A8B5C2]/40 opacity-75 hover:opacity-100'
+                  }`}
+                >
+                  <div className={`p-1.5 rounded-lg shrink-0 ${isCurrent ? 'bg-[#FF6F91]/20 text-[#FF6F91]' : 'bg-[#161C23] text-[#A8B5C2]'}`}>
+                    <SceneIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-bold text-[#A8B5C2] mb-0.5 flex items-center gap-1">
+                      <span className={isCurrent ? 'text-[#FF6F91] font-black' : ''}>
+                        Ch. {idx + 1}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-[#F4F8FB] truncate">
+                      {scene.title.replace(/^Chapter \d+:\s*/, '')}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

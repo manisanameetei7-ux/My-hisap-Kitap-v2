@@ -12,6 +12,7 @@ import {
   Globe,
   Sparkles,
   GitBranch,
+  BookOpen,
 } from 'lucide-react';
 import { AppUser, LanguageCode } from '../types';
 import { LANGUAGES, t } from '../data/translations';
@@ -26,6 +27,7 @@ interface NavbarProps {
   onLockApp: () => void;
   onSignOut: () => void;
   onOpenPublish: () => void;
+  onOpenPdfManual?: () => void;
   lowStockCount: number;
 }
 
@@ -38,6 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenProfile,
   onLockApp,
   onOpenPublish,
+  onOpenPdfManual,
   lowStockCount,
 }) => {
   const navItems = [
@@ -127,6 +130,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </select>
               </div>
             </div>
+
+            {/* PDF Guide Button */}
+            {onOpenPdfManual && (
+              <button
+                onClick={onOpenPdfManual}
+                title="Download App Understanding & Tutorial PDF Guide"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#161C23] border border-[#26313B] hover:border-[#54B6FF]/50 text-[#54B6FF] text-xs font-bold transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span className="hidden sm:inline">PDF Guide</span>
+              </button>
+            )}
 
             {/* Publish Button */}
             <button

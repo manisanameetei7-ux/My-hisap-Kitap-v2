@@ -18,6 +18,7 @@ import { InvoiceModal } from './components/modals/InvoiceModal';
 import { PaymentQrModal } from './components/modals/PaymentQrModal';
 import { RestoreModal } from './components/modals/RestoreModal';
 import { PublishModal } from './components/modals/PublishModal';
+import { TutorialManualPdfModal } from './components/modals/TutorialManualPdfModal';
 
 // Types & Data
 import {
@@ -83,6 +84,7 @@ export const App: React.FC = () => {
   const [qrCustomer, setQrCustomer] = useState<Customer | null>(null);
   const [isRestoreOpen, setIsRestoreOpen] = useState(false);
   const [isPublishOpen, setIsPublishOpen] = useState(false);
+  const [isPdfManualOpen, setIsPdfManualOpen] = useState(false);
 
   // Sync Language
   const handleLanguageChange = (newLang: LanguageCode) => {
@@ -377,6 +379,7 @@ export const App: React.FC = () => {
         onLockApp={() => setIsLocked(true)}
         onSignOut={handleSignOut}
         onOpenPublish={() => setIsPublishOpen(true)}
+        onOpenPdfManual={() => setIsPdfManualOpen(true)}
         lowStockCount={lowStockProducts.length}
       />
 
@@ -406,6 +409,7 @@ export const App: React.FC = () => {
               setInvoiceEntry(entry);
               setIsInvoiceOpen(true);
             }}
+            onOpenPdfManual={() => setIsPdfManualOpen(true)}
           />
         )}
 
@@ -414,6 +418,11 @@ export const App: React.FC = () => {
             lang={lang}
             products={products}
             canManage={canManage}
+            storeInfo={{
+              ...DEFAULT_STORE_INFO,
+              name: currentUser?.storeName || DEFAULT_STORE_INFO.name,
+              supportPhone: currentUser?.phone || DEFAULT_STORE_INFO.supportPhone,
+            }}
             onAddProduct={() => {
               setEditingProduct(null);
               setIsProductModalOpen(true);
@@ -480,7 +489,12 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'help' && <HelpDesk lang={lang} />}
+        {activeTab === 'help' && (
+          <HelpDesk
+            lang={lang}
+            onOpenPdfManual={() => setIsPdfManualOpen(true)}
+          />
+        )}
       </main>
 
       {/* Footer */}
@@ -583,6 +597,15 @@ export const App: React.FC = () => {
         isOpen={isPublishOpen}
         onClose={() => setIsPublishOpen(false)}
         lang={lang}
+      />
+
+      <TutorialManualPdfModal
+        isOpen={isPdfManualOpen}
+        onClose={() => setIsPdfManualOpen(false)}
+        lang={lang}
+        onPlayVideo={() => {
+          setActiveTab('help');
+        }}
       />
     </div>
   );

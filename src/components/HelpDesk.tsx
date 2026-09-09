@@ -20,12 +20,15 @@ import { LanguageCode } from '../types';
 import { t, LANGUAGES } from '../data/translations';
 import { DEFAULT_STORE_INFO } from '../data/starterData';
 import { TutorialVideoPlayer, TUTORIAL_DATA } from './TutorialVideoPlayer';
+import { generateFeaturesOnlyPdf } from '../utils/pdfGenerator';
+import { Download } from 'lucide-react';
 
 interface HelpDeskProps {
   lang: LanguageCode;
+  onOpenPdfManual?: () => void;
 }
 
-export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
+export const HelpDesk: React.FC<HelpDeskProps> = ({ lang, onOpenPdfManual }) => {
   const [complaintText, setComplaintText] = useState('');
   const [senderName, setSenderName] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
@@ -65,14 +68,38 @@ export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-xl sm:text-2xl font-extrabold text-[#F4F8FB] flex items-center gap-2">
-          <HelpCircle className="w-6 h-6 text-[#17D5B3]" />
-          <span>{t('helpDesk', lang)}</span>
-        </h2>
-        <p className="text-xs text-[#A8B5C2] mt-0.5">
-          {t('helpSubtitle', lang)}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#F4F8FB] flex items-center gap-2">
+            <HelpCircle className="w-6 h-6 text-[#17D5B3]" />
+            <span>{t('helpDesk', lang)}</span>
+          </h2>
+          <p className="text-xs text-[#A8B5C2] mt-0.5">
+            {t('helpSubtitle', lang)}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => generateFeaturesOnlyPdf()}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] font-black text-xs transition-all shadow-md shadow-[#17D5B3]/20 active:scale-95 cursor-pointer"
+            title="Download Step-by-Step PDF Guide for Dashboard, Account Setup, Adding Products, POS Billing, Invoices, Udhar Khata, Reports & HelpDesk"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download Feature Guide (.pdf)</span>
+          </button>
+
+          {onOpenPdfManual && (
+            <button
+              onClick={onOpenPdfManual}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#161C23] border border-[#26313B] hover:border-[#54B6FF]/50 text-[#54B6FF] font-bold text-xs transition-all active:scale-95 cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Full Manual & Video Scripts</span>
+            </button>
+          )}
+        </div>
+
       </div>
 
       {/* Support Contact Grid */}
@@ -200,68 +227,116 @@ export const HelpDesk: React.FC<HelpDeskProps> = ({ lang }) => {
         )}
       </div>
 
-      {/* Video & Interactive Tutorial Guides */}
+      {/* Master Video Tutorial & Interactive Step Guides */}
       <div className="bg-[#101419] border border-[#26313B] rounded-2xl p-5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#26313B] pb-3">
           <div className="flex items-center gap-2">
             <Video className="w-5 h-5 text-[#FF6F91]" />
             <div>
               <h3 className="font-extrabold text-base text-[#F4F8FB]">
-                Video Tutorials & Interactive Step Guides
+                Video Tutorial & Interactive App Guide
               </h3>
               <p className="text-xs text-[#A8B5C2]">
-                Learn how to operate POS billing, customer ledgers, and inventory like a pro.
+                Watch the complete walkthrough covering POS billing, customer ledgers, and inventory management.
               </p>
             </div>
           </div>
+
+          {onOpenPdfManual && (
+            <button
+              onClick={onOpenPdfManual}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#161C23] border border-[#26313B] hover:border-[#17D5B3]/50 text-[#17D5B3] text-xs font-bold transition-colors self-start sm:self-center"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>PDF Video Storyboard</span>
+            </button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {TUTORIAL_DATA.map((tut, idx) => (
-            <div
-              key={tut.id}
-              className="bg-[#161C23] border border-[#26313B] hover:border-[#FF6F91]/50 rounded-xl p-4 transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF6F91] bg-[#FF6F91]/10 px-2 py-0.5 rounded">
-                    Video Guide #{idx + 1}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#A8B5C2]">
-                    ⏱️ {tut.durationSec}s
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-[#F4F8FB] mb-1.5">{tut.title}</h4>
-                <p className="text-xs text-[#A8B5C2] mb-3 leading-relaxed">
-                  {tut.description}
-                </p>
-                <div className="space-y-1">
-                  {tut.scenes.map((sc, sIdx) => (
-                    <div key={sIdx} className="text-[11px] text-[#A8B5C2] flex items-center gap-1.5">
-                      <span className="text-[#17D5B3] font-bold">▶</span>
-                      <span className="truncate">{sc.title}</span>
-                    </div>
-                  ))}
-                </div>
+        {/* Unified Master Video Showcase Card */}
+        <div className="bg-[#161C23] border border-[#26313B] hover:border-[#FF6F91]/40 rounded-2xl p-5 sm:p-6 transition-all relative overflow-hidden group">
+          {/* Ambient Glow */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-[#FF6F91]/10 to-[#17D5B3]/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-black uppercase tracking-wider text-[#FF6F91] bg-[#FF6F91]/15 border border-[#FF6F91]/30 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                  <Play className="w-3 h-3 fill-current" />
+                  Master Video Tutorial
+                </span>
+                <span className="text-[10px] font-bold text-[#17D5B3] bg-[#17D5B3]/10 border border-[#17D5B3]/30 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Ultra-Realistic Human Voice
+                </span>
+                <span className="text-[10px] font-mono text-[#A8B5C2] bg-[#101419] px-2.5 py-1 rounded-full border border-[#26313B]">
+                  ⏱️ 3 Mins Full Walkthrough
+                </span>
               </div>
 
+              <h4 className="text-lg sm:text-xl font-black text-[#F4F8FB] tracking-tight">
+                Hisap Kitap Complete Application Tutorial
+              </h4>
+
+              <p className="text-xs sm:text-sm text-[#A8B5C2] leading-relaxed">
+                Step-by-step master video demonstration with studio voice narration in English, অসমীয়া (Assamese), বাংলা (Bengali), and हिन्दी (Hindi).
+              </p>
+
+              {/* 8-Chapter Roadmap Badges */}
+              <div className="pt-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">1.</span> Store Setup & PIN
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">2.</span> Live Dashboard
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">3.</span> Product Catalog
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">4.</span> Fast POS Billing
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">5.</span> Invoices & Thermal
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">6.</span> Udhar Khata
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">7.</span> Dynamic UPI QR
+                </div>
+                <div className="p-2 rounded-lg bg-[#101419] border border-[#26313B] text-[11px] font-bold text-[#F4F8FB] flex items-center gap-1.5">
+                  <span className="text-[#17D5B3]">8.</span> Offline Backup
+                </div>
+              </div>
+            </div>
+
+            {/* Big Action Button */}
+            <div className="shrink-0 flex flex-col justify-center items-center gap-3">
               <button
-                onClick={() => setSelectedTutorial(idx)}
-                className="mt-4 w-full py-2.5 rounded-lg bg-[#FF6F91] hover:bg-[#FF557F] text-[#050608] text-xs font-black flex items-center justify-center gap-2 transition-transform active:scale-98 shadow-md"
+                onClick={() => setSelectedTutorial(0)}
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF6F91] to-[#FF557F] hover:from-[#FF557F] hover:to-[#E63E68] text-[#050608] text-sm font-black flex items-center justify-center gap-2.5 transition-all shadow-xl shadow-[#FF6F91]/25 active:scale-95 cursor-pointer"
               >
-                <Play className="w-4 h-4 fill-current" />
+                <div className="w-8 h-8 rounded-full bg-[#050608] text-[#FF6F91] flex items-center justify-center">
+                  <Play className="w-4 h-4 ml-0.5 fill-current" />
+                </div>
                 <span>Play Video Tutorial</span>
               </button>
+
+              <span className="text-[11px] text-[#A8B5C2] text-center">
+                Interactive Player with Chapter Timeline & Multilingual Voice
+              </span>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Interactive Playable Video Player Modal */}
         {selectedTutorial !== null && (
           <TutorialVideoPlayer
-            initialTutorialIndex={selectedTutorial}
+            initialTutorialIndex={0}
             lang={'en'}
             onClose={() => setSelectedTutorial(null)}
+            onOpenPdfManual={onOpenPdfManual}
           />
         )}
       </div>

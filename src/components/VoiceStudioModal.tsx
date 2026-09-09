@@ -26,7 +26,8 @@ import {
   HUMAN_VOICE_PERSONAS,
   HumanVoicePersona,
   ASSAMESE_STUDIO_PRESETS,
-  AssameseStudioPreset,
+  HINDI_STUDIO_PRESETS,
+  IndicStudioPreset,
   fetchHumanSpeechAudio,
   downloadWavAudio,
 } from '../utils/humanVoice';
@@ -44,13 +45,18 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
   onClose,
   onLaunchTutorialWithVoice,
 }) => {
-  const [selectedLang, setSelectedLang] = useState<LanguageCode>(lang === 'as' ? 'as' : 'as');
-  const [selectedPersonaId, setSelectedPersonaId] = useState<string>('pratibha-as-female');
-  const [genderFilter, setGenderFilter] = useState<'all' | 'female' | 'male'>('female');
-  const [inputText, setInputText] = useState<string>(
-    ASSAMESE_STUDIO_PRESETS[0].assameseText
+  const [selectedLang, setSelectedLang] = useState<LanguageCode>(
+    lang === 'hi' ? 'hi' : lang === 'as' ? 'as' : 'as'
   );
-  const [selectedPresetId, setSelectedPresetId] = useState<string>(ASSAMESE_STUDIO_PRESETS[0].id);
+  const [selectedPersonaId, setSelectedPersonaId] = useState<string>(
+    lang === 'hi' ? 'ananya-hi-female' : 'pratibha-as-female'
+  );
+  const [genderFilter, setGenderFilter] = useState<'all' | 'female' | 'male'>('female');
+
+  const currentPresets = selectedLang === 'hi' ? HINDI_STUDIO_PRESETS : ASSAMESE_STUDIO_PRESETS;
+
+  const [inputText, setInputText] = useState<string>(currentPresets[0].nativeText);
+  const [selectedPresetId, setSelectedPresetId] = useState<string>(currentPresets[0].id);
 
   // Playback & State
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -62,7 +68,7 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
   const [copied, setCopied] = useState<boolean>(false);
   const [previewingVoiceId, setPreviewingVoiceId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>(
-    'Ready for Ultra-Realistic Assamese Voice Synthesis'
+    'Ready for Ultra-Realistic Human Voice Synthesis'
   );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -109,10 +115,21 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
   });
 
   // Handle Preset Selection
-  const handleSelectPreset = (preset: AssameseStudioPreset) => {
+  const handleSelectPreset = (preset: IndicStudioPreset) => {
     setSelectedPresetId(preset.id);
-    setInputText(preset.assameseText);
+    setInputText(preset.nativeText);
     setSelectedPersonaId(preset.recommendedVoiceId);
+    stopAudio();
+  };
+
+  // Switch Language
+  const handleLanguageChange = (newLang: LanguageCode) => {
+    setSelectedLang(newLang);
+    const presets = newLang === 'hi' ? HINDI_STUDIO_PRESETS : ASSAMESE_STUDIO_PRESETS;
+    const defaultPersona = newLang === 'hi' ? 'ananya-hi-female' : 'pratibha-as-female';
+    setSelectedPersonaId(defaultPersona);
+    setSelectedPresetId(presets[0].id);
+    setInputText(presets[0].nativeText);
     stopAudio();
   };
 
@@ -279,10 +296,7 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
               {LANGUAGES.map((l) => (
                 <button
                   key={l.code}
-                  onClick={() => {
-                    setSelectedLang(l.code);
-                    stopAudio();
-                  }}
+                  onClick={() => handleLanguageChange(l.code)}
                   className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
                     selectedLang === l.code
                       ? 'bg-[#17D5B3] text-[#050608] shadow-sm'
@@ -309,7 +323,7 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
 
         {/* Main Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 bg-[#090C0F]">
-          {/* Top Banner: Female Voice Spotlight for Assamese */}
+          {/* Top Banner: Voice Spotlight */}
           <div className="bg-gradient-to-r from-[#17D5B3]/15 via-[#FF6F91]/15 to-[#54B6FF]/15 border border-[#17D5B3]/30 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
               <div className="flex items-center gap-3.5">
@@ -319,14 +333,16 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-black text-[#17D5B3] uppercase tracking-wider">
-                      ✨ Assamese Female Voice Engine Active
+                      ✨ {selectedLang === 'hi' ? 'Hindi (हिन्दी)' : selectedLang === 'as' ? 'Assamese (অসমীয়া)' : 'Indic'} Voice Engine Active
                     </span>
                     <span className="text-[10px] font-bold bg-[#101419]/80 text-[#F4F8FB] px-2 py-0.5 rounded-full border border-[#26313B]">
-                      প্ৰতিভা / জোনালী / ৰূপালী
+                      {selectedLang === 'hi' ? 'अनन्या / पूजा / प्रिया / आरव' : 'প্ৰতিভা / জোনালী / ৰূপালী / হেমন্ত'}
                     </span>
                   </div>
                   <h4 className="text-sm sm:text-base font-extrabold text-[#F4F8FB] mt-0.5">
-                    Authentic Assamese Pronunciation with Natural Human Inflection
+                    {selectedLang === 'hi'
+                      ? 'Authentic Hindi Pronunciation with Natural Human Inflection'
+                      : 'Authentic Assamese Pronunciation with Natural Human Inflection'}
                   </h4>
                   <p className="text-xs text-[#A8B5C2]">
                     High-definition voice output with smooth conversational tone, perfect for teaching customers and shop staff.
@@ -338,14 +354,18 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => {
-                    setSelectedPersonaId('pratibha-as-female');
+                    if (selectedLang === 'hi') {
+                      setSelectedPersonaId('ananya-hi-female');
+                    } else {
+                      setSelectedPersonaId('pratibha-as-female');
+                    }
                     setGenderFilter('female');
                     handleSynthesizeAndPlay();
                   }}
                   className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] text-xs font-black flex items-center justify-center gap-2 shadow-lg shadow-[#17D5B3]/25 transition-transform active:scale-95"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>Test Pratibha Female Voice</span>
+                  <span>Test {selectedLang === 'hi' ? 'Ananya (Hindi)' : 'Pratibha (Assamese)'} Voice</span>
                 </button>
               </div>
             </div>
@@ -484,17 +504,19 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
             </div>
           </div>
 
-          {/* Section 2: Assamese Tutorial Presets Library */}
+          {/* Section 2: Tutorial Presets Library */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#FF6F91]" />
               <h4 className="text-sm font-extrabold text-[#F4F8FB]">
-                Assamese Tutorial Voice Script Presets (অসমীয়া পাঠ্য সংগ্ৰহ)
+                {selectedLang === 'hi'
+                  ? 'Hindi Tutorial Voice Script Presets (हिन्दी पाठ संग्रह)'
+                  : 'Assamese Tutorial Voice Script Presets (অসমীয়া পাঠ্য সংগ্ৰহ)'}
               </h4>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-              {ASSAMESE_STUDIO_PRESETS.map((preset) => {
+              {currentPresets.map((preset) => {
                 const isSelected = selectedPresetId === preset.id;
                 return (
                   <button
@@ -509,14 +531,14 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
                     <div className="flex items-center justify-between text-[10px] font-bold text-[#A8B5C2] mb-1">
                       <span className="text-[#FF6F91]">{preset.category}</span>
                       <span className="px-1.5 py-0.2 bg-[#161C23] rounded border border-[#26313B] text-[10px]">
-                        Female Voice
+                        Studio Voice
                       </span>
                     </div>
                     <div className="text-xs font-bold text-[#F4F8FB] mb-1 truncate">
-                      {preset.titleAs}
+                      {preset.titleNative}
                     </div>
                     <div className="text-[11px] text-[#A8B5C2] line-clamp-2">
-                      "{preset.assameseText}"
+                      "{preset.nativeText}"
                     </div>
                   </button>
                 );
@@ -530,33 +552,61 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
               <div className="flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-[#17D5B3]" />
                 <h4 className="font-extrabold text-sm text-[#F4F8FB]">
-                  Assamese Text Synthesizer & Speech Editor
+                  {selectedLang === 'hi' ? 'Hindi' : 'Assamese'} Text Synthesizer & Speech Editor
                 </h4>
               </div>
 
-              {/* Quick Assamese Phrase Buttons */}
+              {/* Quick Phrase Buttons */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => insertPhrase('হিচাপ কিতাপত স্বাগতম।')}
-                  className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
-                >
-                  + স্বাগতম বাৰ্তা
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertPhrase('বিলিঙৰ বাবে সামগ্ৰী নিৰ্বাচন কৰক।')}
-                  className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
-                >
-                  + বিলিং সহায়
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertPhrase('গ্ৰাহকৰ বাকী ধন পৰিশোধৰ লিংক পঠিয়াওক।')}
-                  className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
-                >
-                  + বাকী ধন অনুৰোধ
-                </button>
+                {selectedLang === 'hi' ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('हिसाब किताब में आपका स्वागत है।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + स्वागत संदेश
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('बिलिंग के लिए उत्पाद चुनें या बारकोड स्कैन करें।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + बिलिंग सहायता
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('ग्राहक को बकाया राशि और यूपीआई लिंक भेजें।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + उधार तगादा
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('হিচাপ কিতাপত স্বাগতম।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + স্বাগতম বাৰ্তা
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('বিলিঙৰ বাবে সামগ্ৰী নিৰ্বাচন কৰক।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + বিলিং সহায়
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertPhrase('গ্ৰাহকৰ বাকী ধন পৰিশোধৰ লিংক পঠিয়াওক।')}
+                      className="px-2 py-0.5 rounded bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] text-[11px] text-[#A8B5C2] hover:text-[#F4F8FB] transition-colors"
+                    >
+                      + বাকী ধন অনুৰোধ
+                    </button>
+                  </>
+                )}
                 <button
                   type="button"
                   onClick={handleCopyText}
@@ -574,7 +624,11 @@ export const VoiceStudioModal: React.FC<VoiceStudioModalProps> = ({
                 rows={4}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Type or paste any Assamese text to synthesize with ultra-realistic female voice..."
+                placeholder={
+                  selectedLang === 'hi'
+                    ? 'हिन्दी में कोई भी वाक्य लिखें या पेस्ट करें जिसे प्राकृतिक आवाज में बोलना है...'
+                    : 'Type or paste any Assamese text to synthesize with ultra-realistic human voice...'
+                }
                 className="w-full bg-[#161C23] border border-[#26313B] focus:border-[#17D5B3] rounded-xl p-3.5 text-sm text-[#F4F8FB] focus:outline-none placeholder-[#A8B5C2]/50 font-medium leading-relaxed"
               />
             </div>

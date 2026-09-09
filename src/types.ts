@@ -83,11 +83,21 @@ export interface AppUser {
   name: string;
   email?: string;
   phone?: string;
+  storeName?: string;
   upiId?: string;
   password?: string;
   role: UserRole;
   appLockEnabled: boolean;
   lockPin: string;
+}
+
+export interface StoreInfo {
+  name: string;
+  tagline?: string;
+  address?: string;
+  supportPhone?: string;
+  complaintEmail?: string;
+  defaultUpiId?: string;
 }
 
 export interface ReportSummary {

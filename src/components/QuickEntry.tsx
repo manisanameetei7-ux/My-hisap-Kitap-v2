@@ -11,10 +11,15 @@ import {
   CheckCircle2,
   Package,
   Calculator,
+  Barcode,
+  Camera,
+  Zap,
 } from 'lucide-react';
 import { Product, Customer, EntryType, SaleLine, LanguageCode, LedgerEntry } from '../types';
 import { t } from '../data/translations';
 import { formatCurrency } from '../utils/formatters';
+import { CATEGORY_FALLBACK_IMAGES, getMatchingProductImage } from '../data/productImagePresets';
+import { BarcodeScannerModal } from './modals/BarcodeScannerModal';
 
 interface QuickEntryProps {
   lang: LanguageCode;
@@ -61,6 +66,11 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
   const [investAmount, setInvestAmount] = useState<number | ''>('');
   const [investCategory, setInvestCategory] = useState<string>('Shop Rent / Utilities');
   const [investNote, setInvestNote] = useState<string>('');
+
+  // Barcode Scanner State
+  const [isBarcodeScannerOpen, setIsBarcodeScannerOpen] = useState(false);
+  const [quickScanInput, setQuickScanInput] = useState('');
+  const [lastScannedToast, setLastScannedToast] = useState<{ name: string; time: number } | null>(null);
 
   // Basket Calculation helpers
   const totalSaleAmount = basket.reduce((sum, line) => sum + line.quantity * line.unitPrice, 0);
@@ -120,6 +130,77 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
   const handleRemoveBasketLine = (index: number) => {
     if (basket.length === 1) return;
     setBasket(basket.filter((_, i) => i !== index));
+  };
+
+  // Handle scanned barcode for billing basket
+  const handleBarcodeScanned = (scannedCode: string, matchedProduct?: Product) => {
+    const targetProduct =
+      matchedProduct ||
+      products.find(
+        (p) =>
+          (p.barcode && p.barcode.toLowerCase() === scannedCode.toLowerCase()) ||
+          p.id.toLowerCase() === scannedCode.toLowerCase() ||
+          (p.barcode && p.barcode.replace(/\D/g, '') === scannedCode.replace(/\D/g, ''))
+      );
+
+    if (!targetProduct) {
+      setErrorMessage(`No product found for barcode SKU "${scannedCode}".`);
+      return;
+    }
+
+    setErrorMessage('');
+    setLastScannedToast({ name: targetProduct.name, time: Date.now() });
+
+    if (activeType === 'stockIn') {
+      setStockProductId(targetProduct.id);
+      setStockBuyPrice(targetProduct.buyPrice);
+      setSuccessMessage(`Selected ${targetProduct.name} for restocking.`);
+      return;
+    }
+
+    // Check if item is already in basket
+    const existingIndex = basket.findIndex((l) => l.productId === targetProduct.id);
+    if (existingIndex >= 0) {
+      const next = [...basket];
+      next[existingIndex] = {
+        ...next[existingIndex],
+        quantity: next[existingIndex].quantity + 1,
+      };
+      setBasket(next);
+    } else {
+      // If basket only contains empty/default unedited first item and user scans, replace or append
+      if (basket.length === 1 && basket[0].quantity === 1 && basket[0].productId === products[0]?.id && basket[0].productId !== targetProduct.id) {
+        setBasket([
+          {
+            productId: targetProduct.id,
+            productName: targetProduct.name,
+            standardQuantity: targetProduct.standardQuantity,
+            quantity: 1,
+            unitPrice: targetProduct.sellPrice,
+            buyPriceAtSale: targetProduct.buyPrice,
+          },
+        ]);
+      } else {
+        setBasket([
+          ...basket,
+          {
+            productId: targetProduct.id,
+            productName: targetProduct.name,
+            standardQuantity: targetProduct.standardQuantity,
+            quantity: 1,
+            unitPrice: targetProduct.sellPrice,
+            buyPriceAtSale: targetProduct.buyPrice,
+          },
+        ]);
+      }
+    }
+  };
+
+  const handleQuickScanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickScanInput.trim()) return;
+    handleBarcodeScanned(quickScanInput.trim());
+    setQuickScanInput('');
   };
 
   // Submit Sale Out
@@ -323,6 +404,67 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
         </div>
       </div>
 
+      {/* Barcode Quick-Scan Bar */}
+      <div className="bg-[#101419] border border-[#26313B] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#17D5B3]/20 border border-[#17D5B3]/40 text-[#17D5B3] flex items-center justify-center shrink-0">
+            <Barcode className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="text-xs font-extrabold text-[#F4F8FB] flex items-center gap-1.5">
+              <span>Fast Barcode Scanner</span>
+              <span className="text-[10px] bg-[#17D5B3]/15 text-[#17D5B3] px-1.5 py-0.5 rounded font-mono font-bold">
+                Camera + Gun
+              </span>
+            </div>
+            <p className="text-[11px] text-[#A8B5C2]">
+              Scan product barcode to instantly add to bill or adjust quantity
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 flex-1 sm:justify-end">
+          {/* Quick Input Box for USB Barcode Gun / Manual SKU */}
+          <form onSubmit={handleQuickScanSubmit} className="relative flex-1 sm:max-w-xs">
+            <input
+              type="text"
+              value={quickScanInput}
+              onChange={(e) => setQuickScanInput(e.target.value)}
+              placeholder="Scan/type SKU & press Enter..."
+              className="w-full bg-[#161C23] border border-[#26313B] focus:border-[#17D5B3] rounded-xl pl-3 pr-8 py-2 text-xs text-[#F4F8FB] font-mono focus:outline-none placeholder-[#A8B5C2]/60"
+            />
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-[#17D5B3] hover:text-[#15C2A3] font-bold"
+              title="Submit SKU"
+            >
+              ↵
+            </button>
+          </form>
+
+          {/* Open Camera Scanner Modal Button */}
+          <button
+            type="button"
+            onClick={() => setIsBarcodeScannerOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] font-black rounded-xl text-xs shadow-md shadow-[#17D5B3]/20 transition-all shrink-0"
+          >
+            <Camera className="w-4 h-4" />
+            <span>Scan with Camera</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Last Scanned Item Toast Pill */}
+      {lastScannedToast && Date.now() - lastScannedToast.time < 4000 && (
+        <div className="p-2.5 bg-[#17D5B3]/15 border border-[#17D5B3]/50 rounded-xl flex items-center justify-between text-xs text-[#17D5B3] animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span className="font-bold">Scanned & Added: {lastScannedToast.name}</span>
+          </div>
+          <span className="text-[10px] text-[#A8B5C2]">Basket updated</span>
+        </div>
+      )}
+
       {/* Status Notifications */}
       {successMessage && (
         <div className="p-4 rounded-xl bg-[#17D5B3]/15 border border-[#17D5B3]/40 flex items-center justify-between text-[#17D5B3] text-sm animate-fadeIn">
@@ -414,28 +556,42 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
               {basket.map((line, idx) => {
                 const prod = products.find((p) => p.id === line.productId);
                 const lineTotal = line.quantity * line.unitPrice;
+                const lineImage = prod?.imageUrl || (prod ? getMatchingProductImage(prod.name, prod.category) : CATEGORY_FALLBACK_IMAGES.grocery);
 
                 return (
                   <div
                     key={idx}
                     className="bg-[#161C23] border border-[#26313B] rounded-xl p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center"
                   >
-                    {/* Product Selector */}
-                    <div className="sm:col-span-5">
-                      <label className="text-[10px] text-[#A8B5C2] font-semibold mb-1 block">
-                        Product #{idx + 1}
-                      </label>
-                      <select
-                        value={line.productId}
-                        onChange={(e) => handleUpdateBasketLine(idx, { productId: e.target.value })}
-                        className="w-full bg-[#101419] border border-[#26313B] focus:border-[#17D5B3] rounded-lg px-3 py-2 text-sm text-[#F4F8FB] focus:outline-none"
-                      >
-                        {products.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} (Stock: {p.stock})
-                          </option>
-                        ))}
-                      </select>
+                    {/* Product Selector with Photo Thumbnail */}
+                    <div className="sm:col-span-5 flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#101419] border border-[#26313B] shrink-0">
+                        <img
+                          src={lineImage}
+                          alt={line.productName}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = CATEGORY_FALLBACK_IMAGES.grocery;
+                          }}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <label className="text-[10px] text-[#A8B5C2] font-semibold mb-1 block">
+                          Product #{idx + 1}
+                        </label>
+                        <select
+                          value={line.productId}
+                          onChange={(e) => handleUpdateBasketLine(idx, { productId: e.target.value })}
+                          className="w-full bg-[#101419] border border-[#26313B] focus:border-[#17D5B3] rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-[#F4F8FB] focus:outline-none truncate"
+                        >
+                          {products.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} (Stock: {p.stock})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     {/* Quantity Input */}
@@ -576,21 +732,40 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
               <label className="text-xs font-semibold text-[#A8B5C2] block mb-1.5">
                 {t('selectProduct', lang)}
               </label>
-              <select
-                value={stockProductId}
-                onChange={(e) => {
-                  setStockProductId(e.target.value);
-                  const p = products.find((prod) => prod.id === e.target.value);
-                  if (p) setStockBuyPrice(p.buyPrice);
-                }}
-                className="w-full bg-[#161C23] border border-[#26313B] focus:border-[#54B6FF] rounded-xl px-3.5 py-2.5 text-sm text-[#F4F8FB] focus:outline-none"
-              >
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} - Current Stock: {p.stock} ({p.standardQuantity})
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-3">
+                {(() => {
+                  const currStockProd = products.find((p) => p.id === stockProductId);
+                  const currImg = currStockProd?.imageUrl || (currStockProd ? getMatchingProductImage(currStockProd.name, currStockProd.category) : CATEGORY_FALLBACK_IMAGES.grocery);
+                  return (
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#161C23] border border-[#26313B] shrink-0">
+                      <img
+                        src={currImg}
+                        alt={currStockProd?.name || 'Stock item'}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = CATEGORY_FALLBACK_IMAGES.grocery;
+                        }}
+                      />
+                    </div>
+                  );
+                })()}
+                <select
+                  value={stockProductId}
+                  onChange={(e) => {
+                    setStockProductId(e.target.value);
+                    const p = products.find((prod) => prod.id === e.target.value);
+                    if (p) setStockBuyPrice(p.buyPrice);
+                  }}
+                  className="flex-1 bg-[#161C23] border border-[#26313B] focus:border-[#54B6FF] rounded-xl px-3.5 py-2.5 text-sm text-[#F4F8FB] focus:outline-none"
+                >
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} - Current Stock: {p.stock} ({p.standardQuantity})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -723,6 +898,20 @@ export const QuickEntry: React.FC<QuickEntryProps> = ({
           </div>
         </form>
       )}
+
+      {/* Barcode Camera Scanner Modal */}
+      <BarcodeScannerModal
+        isOpen={isBarcodeScannerOpen}
+        onClose={() => setIsBarcodeScannerOpen(false)}
+        onScanSuccess={(scannedCode, matchedProduct) => {
+          handleBarcodeScanned(scannedCode, matchedProduct);
+        }}
+        products={products}
+        lang={lang}
+        continuousMode={true}
+        title="POS Barcode Scanner"
+        subtitle="Point camera at product barcode or scan with gun to add to bill"
+      />
     </div>
   );
 };

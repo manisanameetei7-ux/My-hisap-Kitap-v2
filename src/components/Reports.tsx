@@ -18,6 +18,7 @@ import { LedgerEntry, Customer, Product, LanguageCode, ReportSummary } from '../
 import { t } from '../data/translations';
 import { formatCurrency, generateEntriesCsv, downloadFile, isSameDay, isSameMonth, formatDate } from '../utils/formatters';
 import { exportFullBackup, getLastBackupDate } from '../utils/storage';
+import { generateFinancialReportPdf, safePrintHtml } from '../utils/pdfGenerator';
 
 interface ReportsProps {
   lang: LanguageCode;
@@ -39,6 +40,7 @@ export const Reports: React.FC<ReportsProps> = ({
   const [period, setPeriod] = useState<'today' | 'month' | 'all'>('month');
   const [copiedBackup, setCopiedBackup] = useState(false);
   const [backupMessage, setBackupMessage] = useState('');
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const now = new Date();
 
@@ -69,8 +71,33 @@ export const Reports: React.FC<ReportsProps> = ({
   const totalCustomerDue = customers.reduce((sum, c) => sum + c.balance, 0);
   const netCash = totalSales - totalStockInCost - totalExpenses;
 
+  const handleDownloadPdf = () => {
+    setIsGeneratingPdf(true);
+    try {
+      generateFinancialReportPdf(
+        period,
+        totalSales,
+        totalCostOfGoodsSold,
+        grossProfit,
+        netCash,
+        totalCustomerDue,
+        filteredEntries,
+        customers
+      );
+    } catch (err) {
+      console.error('Report PDF error:', err);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   const handlePrint = () => {
-    window.print();
+    const printableElement = document.getElementById('financial-report-container');
+    if (printableElement) {
+      safePrintHtml(printableElement.innerHTML, `Hisap Kitap - Business Report (${period.toUpperCase()})`);
+    } else {
+      window.print();
+    }
   };
 
   const handleExportCsv = () => {
@@ -140,6 +167,16 @@ export const Reports: React.FC<ReportsProps> = ({
           </div>
 
           <button
+            onClick={handleDownloadPdf}
+            disabled={isGeneratingPdf}
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#17D5B3] hover:bg-[#15C2A3] text-[#050608] rounded-xl text-xs font-black transition-all shadow-md shadow-[#17D5B3]/20 cursor-pointer disabled:opacity-50"
+            title="Download PDF Report"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>{isGeneratingPdf ? 'Generating PDF...' : 'Download PDF (.pdf)'}</span>
+          </button>
+
+          <button
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3 py-2 bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] rounded-xl text-xs font-bold text-[#F4F8FB] transition-colors"
           >
@@ -152,13 +189,15 @@ export const Reports: React.FC<ReportsProps> = ({
             className="flex items-center gap-1.5 px-3 py-2 bg-[#161C23] hover:bg-[#26313B] border border-[#26313B] rounded-xl text-xs font-bold text-[#F4F8FB] transition-colors"
           >
             <Download className="w-3.5 h-3.5 text-[#54B6FF]" />
-            <span>{t('copyReport', lang)}</span>
+            <span>CSV Export</span>
           </button>
         </div>
       </div>
 
-      {/* Financial Matrix Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Printable Report Content Container */}
+      <div id="financial-report-container" className="space-y-6">
+        {/* Financial Matrix Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Sales */}
         <div className="bg-[#101419] border border-[#26313B] rounded-xl p-4 sm:p-5">
           <span className="text-xs font-semibold text-[#A8B5C2]">{t('sales', lang)}</span>
@@ -275,6 +314,7 @@ export const Reports: React.FC<ReportsProps> = ({
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Backup & Restore Section */}

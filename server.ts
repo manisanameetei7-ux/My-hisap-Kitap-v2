@@ -108,10 +108,21 @@ async function startServer() {
         cached: false,
       });
     } catch (err: any) {
-      console.error("TTS generation error:", err?.message || err);
-      return res.status(500).json({
-        error: err?.message || "Internal server error during speech synthesis",
+      const errMsg = err?.message || String(err);
+      const isQuota = errMsg.includes("429") || errMsg.includes("Quota exceeded") || errMsg.includes("RESOURCE_EXHAUSTED");
+      
+      if (isQuota) {
+        console.warn("TTS Quota limit reached on Gemini 3.1 Flash TTS. Client will seamlessly use local browser speech engine.");
+      } else {
+        console.warn("TTS generation notice:", errMsg);
+      }
+
+      return res.status(200).json({
         fallback: true,
+        quotaExceeded: isQuota,
+        error: isQuota
+          ? "Gemini Flash TTS daily free tier rate limit reached. Auto-switching to high-quality local speech engine."
+          : errMsg,
       });
     }
   });
